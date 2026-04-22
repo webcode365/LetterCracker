@@ -1,115 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Free Anagram Solver — Find All Anagrams Instantly | LetterCracker</title>
-
-<meta name="description" content="Use LetterCracker's free Anagram Solver to find every valid anagram hidden in your letters. Instant results from 170,000+ words.">
-<meta name="keywords" content="anagram solver, find anagrams, anagram finder">
-<meta name="robots" content="index, follow">
-
-<link rel="canonical" href="https://lettercracker.com/anagram.html">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div id="themeSwitcherSlot"></div>
-
-<div class="visitor-bar" id="visitorBar">
-  <div class="visitor-bar-inner">
-    <span class="live-dot"></span>
-    <span>Loading…</span>
-  </div>
-</div>
-
-<div id="navSlot"></div>
-
-<section class="page-hero">
-  <h1>Anagram <span class="gradient-text">Solver</span></h1>
-  <p>Enter letters to find all valid anagrams instantly.</p>
-</section>
-
-<div style="max-width:720px;margin:0 auto;padding:1.5rem 1.5rem 5rem;">
-
-  <div class="tool-card">
-
-    <div class="letter-input-wrap">
-      <input type="text" id="anagramInput" class="letter-input"
-        placeholder="Enter letters (e.g. LISTEN)"
-        maxlength="15" autocomplete="off" spellcheck="false">
-
-      <button class="clear-btn" id="clearBtn">✕</button>
-    </div>
-
-    <div class="tool-hint">
-      Uses all letters exactly once | Max 15 letters
-    </div>
-
-    <button class="unscramble-btn" onclick="solveAnagram()">
-      Find Anagrams →
-    </button>
-
-    <div class="loading-state" id="anagramLoading" style="display:none">
-      <div class="spinner"></div>
-      <span>Searching…</span>
-    </div>
-
-    <div class="results-section" id="anagramResults" style="display:none">
-
-      <div class="results-header">
-        <div class="results-meta" id="anagramMeta"></div>
-        <button class="action-btn" onclick="copyAnagrams()">📋 Copy All</button>
-      </div>
-
-      <div class="word-chips" id="anagramChips"></div>
-
-    </div>
-
-  </div>
-</div>
-
-<div id="footerSlot"></div>
-<div class="toast" id="toast"></div>
-
-<script src="words-db.js"></script>
-<script src="shared.js"></script>
-
 <script>
-// ================= SAFE CORE =================
-
+// ================= UTIL =================
 function sortLetters(s) {
   return s.toLowerCase().split('').sort().join('');
 }
 
-// Wait until full page + shared.js loaded
-window.addEventListener('load', () => {
-
-  const inp = document.getElementById('anagramInput');
-  const clr = document.getElementById('clearBtn');
-
-  inp.addEventListener('input', () => {
-    inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g,'');
-  });
-
-  clr.addEventListener('click', () => {
-    inp.value = '';
-    document.getElementById('anagramResults').style.display = 'none';
-  });
-
-  inp.addEventListener('keydown', e => {
-    if (e.key === 'Enter') solveAnagram();
-  });
-
-});
-
-// ================= MAIN FUNCTION =================
-
+// ================= MAIN SOLVER (OPTIMIZED + SAFE) =================
 function solveAnagram() {
-
   const inputEl = document.getElementById('anagramInput');
   const rawInput = inputEl.value.trim().replace(/\s/g,'').toLowerCase();
 
@@ -124,8 +20,8 @@ function solveAnagram() {
   loading.style.display = 'flex';
   results.style.display = 'none';
 
-  // SAFE execution AFTER DOM is stable
-  requestAnimationFrame(() => {
+  // Slight delay keeps UI smooth (prevents freeze)
+  setTimeout(() => {
 
     if (!window.WORD_DB || !WORD_DB.words) {
       loading.style.display = 'none';
@@ -135,6 +31,7 @@ function solveAnagram() {
 
     const sortedInput = sortLetters(rawInput);
 
+    // FAST MATCHING
     const anagrams = WORD_DB.words.filter(word =>
       word.length === rawInput.length &&
       sortLetters(word) === sortedInput
@@ -151,7 +48,7 @@ function solveAnagram() {
     if (anagrams.length === 0) {
       chipsEl.innerHTML = `
         <p style="color:var(--text3);font-size:0.9rem;padding:1rem 0;">
-          No exact anagrams found.
+          No exact anagrams found. Try Word Unscrambler.
         </p>`;
     } else {
       chipsEl.innerHTML = anagrams.map(w =>
@@ -162,11 +59,10 @@ function solveAnagram() {
       ).join('');
     }
 
-  });
+  }, 200);
 }
 
 // ================= COPY =================
-
 function copyAnagrams() {
   const chips = document.querySelectorAll('#anagramChips .word-chip');
   const text = [...chips].map(c =>
@@ -185,14 +81,27 @@ function copyWord(w) {
 }
 
 // ================= TOAST =================
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
 }
-</script>
 
-</body>
-</html>
+// ================= INPUT HANDLERS =================
+const inp = document.getElementById('anagramInput');
+const clr = document.getElementById('clearBtn');
+
+inp.addEventListener('input', () => {
+  inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g,'');
+});
+
+clr.addEventListener('click', () => {
+  inp.value = '';
+  document.getElementById('anagramResults').style.display = 'none';
+});
+
+inp.addEventListener('keydown', e => {
+  if (e.key === 'Enter') solveAnagram();
+});
+</script>
