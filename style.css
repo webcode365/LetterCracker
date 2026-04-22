@@ -185,12 +185,12 @@ a:hover { opacity: 0.85; }
 }
 .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
 .logo-icon {
-  font-family: 'Syne', serif; font-weight: 800; font-size: 1rem;
+  font-family: 'Roboto Slab', serif; font-weight: 800; font-size: 1rem;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .logo-text {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem;
+  font-family: 'Roboto Slab', sans-serif; font-weight: 800; font-size: 1.15rem;
   color: var(--text1); letter-spacing: -0.02em;
 }
 .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
