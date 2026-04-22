@@ -1,102 +1,8 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Anagram Solver — Find All Anagrams Instantly | LetterCracker</title>
-<meta name="description" content="Use LetterCracker's free Anagram Solver to find every valid anagram hidden in your letters. Instant results from 170,000+ words. Perfect for Scrabble, crosswords & word puzzles.">
-<meta name="keywords" content="anagram solver, find anagrams, anagram finder, word anagram, anagram maker, free anagram solver">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://lettercracker.com/anagram.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div id="themeSwitcherSlot"></div>
-<div class="visitor-bar" id="visitorBar">
-  <div class="visitor-bar-inner">
-    <span class="live-dot"></span>
-    <span>Loading…</span>
-  </div>
-</div>
-
-<div id="navSlot"></div>
-
-<section class="page-hero">
-  <h1>Anagram <span class="gradient-text">Solver</span></h1>
-  <p>Enter any word or set of letters to instantly reveal every valid anagram hidden within.</p>
-</section>
-
-<div style="max-width:720px;margin:0 auto;padding:1.5rem 1.5rem 5rem;">
-
-  <div class="tool-card">
-
-    <div class="letter-input-wrap">
-      <input type="text" id="anagramInput" class="letter-input"
-        placeholder="Enter letters (e.g. LISTEN)"
-        maxlength="15" autocomplete="off" autocorrect="off" spellcheck="false">
-
-      <button class="clear-btn" id="clearBtn">✕</button>
-    </div>
-
-    <div class="tool-hint">
-      Anagrams use ALL entered letters exactly once | Max 15 letters
-    </div>
-
-    <button class="unscramble-btn" onclick="solveAnagram()">
-      Find Anagrams →
-    </button>
-
-    <div class="loading-state" id="anagramLoading" style="display:none">
-      <div class="spinner"></div>
-      <span>Searching for anagrams…</span>
-    </div>
-
-    <div class="results-section" id="anagramResults" style="display:none">
-
-      <div class="results-header">
-        <div class="results-meta" id="anagramMeta"></div>
-        <button class="action-btn" onclick="copyAnagrams()">📋 Copy All</button>
-      </div>
-
-      <div class="word-chips" id="anagramChips"></div>
-
-    </div>
-
-  </div>
-</div>
-
-<div id="footerSlot"></div>
-<div class="toast" id="toast"></div>
-
-<script src="words-db.js"></script>
-<script src="shared.js"></script>
-
-<script>
-// ================= FAST SORT =================
 function sortLetters(s) {
   return s.toLowerCase().split('').sort().join('');
 }
 
-// ================= PREBUILT MAP (FAST LOOKUP) =================
-let ANAGRAM_MAP = null;
-
-function buildAnagramMap() {
-  if (ANAGRAM_MAP) return;
-
-  ANAGRAM_MAP = new Map();
-
-  for (let w of WORD_DB.words) {
-    const key = sortLetters(w);
-    if (!ANAGRAM_MAP.has(key)) ANAGRAM_MAP.set(key, []);
-    ANAGRAM_MAP.get(key).push(w);
-  }
-}
-
-// ================= MAIN SOLVER =================
+// ================= MAIN SOLVER (SAFE + STABLE) =================
 function solveAnagram() {
   const inputEl = document.getElementById('anagramInput');
   const rawInput = inputEl.value.trim().replace(/\s/g,'').toLowerCase();
@@ -112,37 +18,49 @@ function solveAnagram() {
   loading.style.display = 'flex';
   results.style.display = 'none';
 
-  // 🔥 build once
-  buildAnagramMap();
+  // ⚠️ KEEP DELAY TO PREVENT UI LAYOUT BUGS
+  setTimeout(() => {
 
-  // ⚡ no artificial delay anymore
-  const key = sortLetters(rawInput);
-  const anagrams = ANAGRAM_MAP.get(key) || [];
+    if (!window.WORD_DB || !WORD_DB.words) {
+      loading.style.display = 'none';
+      showToast("Word database not loaded");
+      return;
+    }
 
-  loading.style.display = 'none';
-  results.style.display = 'block';
+    const sortedInput = sortLetters(rawInput);
 
-  document.getElementById('anagramMeta').innerHTML =
-    `Found <strong>${anagrams.length}</strong> anagram${anagrams.length !== 1 ? 's' : ''} for <strong>${rawInput.toUpperCase()}</strong>`;
+    // SAFE ORIGINAL MATCH LOGIC (NO BREAKAGE)
+    const anagrams = WORD_DB.words.filter(word =>
+      word.length === rawInput.length &&
+      sortLetters(word) === sortedInput
+    );
 
-  const chipsEl = document.getElementById('anagramChips');
+    loading.style.display = 'none';
+    results.style.display = 'block';
 
-  if (anagrams.length === 0) {
-    chipsEl.innerHTML = `
-      <p style="color:var(--text3);font-size:0.9rem;padding:1rem 0;">
-        No exact anagrams found. Try Word Unscrambler.
-      </p>`;
-  } else {
-    chipsEl.innerHTML = anagrams.map(w =>
-      `<span class="word-chip" onclick="copyWord('${w.toUpperCase()}')">
-        ${w.toUpperCase()}
-        <span class="pts">${WORD_DB.getPoints(w)}pt</span>
-      </span>`
-    ).join('');
-  }
+    document.getElementById('anagramMeta').innerHTML =
+      `Found <strong>${anagrams.length}</strong> anagram${anagrams.length !== 1 ? 's' : ''} for <strong>${rawInput.toUpperCase()}</strong>`;
+
+    const chipsEl = document.getElementById('anagramChips');
+
+    if (anagrams.length === 0) {
+      chipsEl.innerHTML = `
+        <p style="color:var(--text3);font-size:0.9rem;padding:1rem 0;">
+          No exact anagrams found. Try Word Unscrambler.
+        </p>`;
+    } else {
+      chipsEl.innerHTML = anagrams.map(w =>
+        `<span class="word-chip" onclick="copyWord('${w.toUpperCase()}')">
+          ${w.toUpperCase()}
+          <span class="pts">${WORD_DB.getPoints(w)}pt</span>
+        </span>`
+      ).join('');
+    }
+
+  }, 200);
 }
 
-// ================= COPY =================
+// ================= COPY FUNCTIONS =================
 function copyAnagrams() {
   const chips = document.querySelectorAll('#anagramChips .word-chip');
   const text = [...chips].map(c =>
@@ -160,6 +78,7 @@ function copyWord(w) {
   );
 }
 
+// ================= TOAST =================
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -183,7 +102,3 @@ clr.addEventListener('click', () => {
 inp.addEventListener('keydown', e => {
   if (e.key === 'Enter') solveAnagram();
 });
-</script>
-
-</body>
-</html>
