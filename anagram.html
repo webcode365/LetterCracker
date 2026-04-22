@@ -76,11 +76,27 @@
 <script src="shared.js"></script>
 
 <script>
-// ✅ FIXED: safer + consistent sorting
+// ================= FAST SORT =================
 function sortLetters(s) {
   return s.toLowerCase().split('').sort().join('');
 }
 
+// ================= PREBUILT MAP (FAST LOOKUP) =================
+let ANAGRAM_MAP = null;
+
+function buildAnagramMap() {
+  if (ANAGRAM_MAP) return;
+
+  ANAGRAM_MAP = new Map();
+
+  for (let w of WORD_DB.words) {
+    const key = sortLetters(w);
+    if (!ANAGRAM_MAP.has(key)) ANAGRAM_MAP.set(key, []);
+    ANAGRAM_MAP.get(key).push(w);
+  }
+}
+
+// ================= MAIN SOLVER =================
 function solveAnagram() {
   const inputEl = document.getElementById('anagramInput');
   const rawInput = inputEl.value.trim().replace(/\s/g,'').toLowerCase();
@@ -96,47 +112,37 @@ function solveAnagram() {
   loading.style.display = 'flex';
   results.style.display = 'none';
 
-  setTimeout(() => {
+  // 🔥 build once
+  buildAnagramMap();
 
-    if (!window.WORD_DB || !WORD_DB.words) {
-      loading.style.display = 'none';
-      showToast("Word database not loaded");
-      return;
-    }
+  // ⚡ no artificial delay anymore
+  const key = sortLetters(rawInput);
+  const anagrams = ANAGRAM_MAP.get(key) || [];
 
-    const sortedInput = sortLetters(rawInput);
+  loading.style.display = 'none';
+  results.style.display = 'block';
 
-    // ✅ FIXED MATCHING LOGIC
-    const anagrams = WORD_DB.words.filter(word =>
-      word.length === rawInput.length &&
-      sortLetters(word) === sortedInput
-    );
+  document.getElementById('anagramMeta').innerHTML =
+    `Found <strong>${anagrams.length}</strong> anagram${anagrams.length !== 1 ? 's' : ''} for <strong>${rawInput.toUpperCase()}</strong>`;
 
-    loading.style.display = 'none';
-    results.style.display = 'block';
+  const chipsEl = document.getElementById('anagramChips');
 
-    document.getElementById('anagramMeta').innerHTML =
-      `Found <strong>${anagrams.length}</strong> anagram${anagrams.length !== 1 ? 's' : ''} for <strong>${rawInput.toUpperCase()}</strong>`;
-
-    const chipsEl = document.getElementById('anagramChips');
-
-    if (anagrams.length === 0) {
-      chipsEl.innerHTML = `
-        <p style="color:var(--text3);font-size:0.9rem;padding:1rem 0;">
-          No exact anagrams found. Try Word Unscrambler.
-        </p>`;
-    } else {
-      chipsEl.innerHTML = anagrams.map(w =>
-        `<span class="word-chip" onclick="copyWord('${w.toUpperCase()}')">
-          ${w.toUpperCase()}
-          <span class="pts">${WORD_DB.getPoints(w)}pt</span>
-        </span>`
-      ).join('');
-    }
-
-  }, 200);
+  if (anagrams.length === 0) {
+    chipsEl.innerHTML = `
+      <p style="color:var(--text3);font-size:0.9rem;padding:1rem 0;">
+        No exact anagrams found. Try Word Unscrambler.
+      </p>`;
+  } else {
+    chipsEl.innerHTML = anagrams.map(w =>
+      `<span class="word-chip" onclick="copyWord('${w.toUpperCase()}')">
+        ${w.toUpperCase()}
+        <span class="pts">${WORD_DB.getPoints(w)}pt</span>
+      </span>`
+    ).join('');
+  }
 }
 
+// ================= COPY =================
 function copyAnagrams() {
   const chips = document.querySelectorAll('#anagramChips .word-chip');
   const text = [...chips].map(c =>
@@ -161,7 +167,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-// UI handlers
+// ================= INPUT UI =================
 const inp = document.getElementById('anagramInput');
 const clr = document.getElementById('clearBtn');
 
