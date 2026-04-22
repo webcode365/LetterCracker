@@ -1,107 +1,117 @@
-<script>
-// ================= UTIL =================
-function sortLetters(s) {
-  return s.toLowerCase().split('').sort().join('');
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anagram Solver | LetterCracker</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* Safety fallback styles so page NEVER looks blank */
+body {
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: #fff;
 }
 
-// ================= MAIN SOLVER (OPTIMIZED + SAFE) =================
+.tool-card {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.word-chip {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  background: #2a2a2a;
+  border-radius: 8px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="tool-card">
+
+  <h2>Anagram Solver</h2>
+
+  <input type="text" id="anagramInput" placeholder="Enter letters (e.g. LISTEN)">
+
+  <button onclick="solveAnagram()">Find Anagrams</button>
+
+  <div id="anagramMeta" style="margin-top:15px;"></div>
+
+  <div id="anagramChips"></div>
+
+</div>
+
+<script src="words-db.js"></script>
+
+<script>
+// ================= SAFE CORE ENGINE =================
+function sortLetters(s) {
+  return (s || "").toLowerCase().split('').sort().join('');
+}
+
 function solveAnagram() {
-  const inputEl = document.getElementById('anagramInput');
-  const rawInput = inputEl.value.trim().replace(/\s/g,'').toLowerCase();
+  try {
+    const inputEl = document.getElementById('anagramInput');
+    const raw = inputEl.value.trim().toLowerCase().replace(/\s/g,'');
 
-  if (!rawInput || rawInput.length < 2) {
-    showToast('Please enter at least 2 letters');
-    return;
-  }
-
-  const loading = document.getElementById('anagramLoading');
-  const results = document.getElementById('anagramResults');
-
-  loading.style.display = 'flex';
-  results.style.display = 'none';
-
-  // Slight delay keeps UI smooth (prevents freeze)
-  setTimeout(() => {
-
-    if (!window.WORD_DB || !WORD_DB.words) {
-      loading.style.display = 'none';
-      showToast("Word database not loaded");
+    if (!raw || raw.length < 2) {
+      alert("Enter at least 2 letters");
       return;
     }
 
-    const sortedInput = sortLetters(rawInput);
-
-    // FAST MATCHING
-    const anagrams = WORD_DB.words.filter(word =>
-      word.length === rawInput.length &&
-      sortLetters(word) === sortedInput
-    );
-
-    loading.style.display = 'none';
-    results.style.display = 'block';
-
-    document.getElementById('anagramMeta').innerHTML =
-      `Found <strong>${anagrams.length}</strong> anagram${anagrams.length !== 1 ? 's' : ''} for <strong>${rawInput.toUpperCase()}</strong>`;
-
-    const chipsEl = document.getElementById('anagramChips');
-
-    if (anagrams.length === 0) {
-      chipsEl.innerHTML = `
-        <p style="color:var(--text3);font-size:0.9rem;padding:1rem 0;">
-          No exact anagrams found. Try Word Unscrambler.
-        </p>`;
-    } else {
-      chipsEl.innerHTML = anagrams.map(w =>
-        `<span class="word-chip" onclick="copyWord('${w.toUpperCase()}')">
-          ${w.toUpperCase()}
-          <span class="pts">${WORD_DB.getPoints(w)}pt</span>
-        </span>`
-      ).join('');
+    if (!window.WORD_DB || !WORD_DB.words) {
+      document.getElementById('anagramMeta').innerText = "Word DB not loaded";
+      return;
     }
 
-  }, 200);
-}
+    const sorted = sortLetters(raw);
 
-// ================= COPY =================
-function copyAnagrams() {
-  const chips = document.querySelectorAll('#anagramChips .word-chip');
-  const text = [...chips].map(c =>
-    c.textContent.replace(/\d+pt/g,'').trim()
-  ).join('\n');
+    const results = WORD_DB.words.filter(w =>
+      w.length === raw.length && sortLetters(w) === sorted
+    );
 
-  navigator.clipboard?.writeText(text).then(() =>
-    showToast('Copied!')
-  );
+    document.getElementById('anagramMeta').innerHTML =
+      "Found <b>" + results.length + "</b> anagrams for <b>" + raw.toUpperCase() + "</b>";
+
+    document.getElementById('anagramChips').innerHTML =
+      results.length
+        ? results.map(w =>
+            `<div class="word-chip" onclick="copyWord('${w}')">${w.toUpperCase()}</div>`
+          ).join('')
+        : "<p>No anagrams found</p>";
+
+  } catch (err) {
+    console.error(err);
+    document.body.innerHTML = "<h2 style='color:red'>Page Error Fixed Mode Active</h2>";
+  }
 }
 
 function copyWord(w) {
-  navigator.clipboard?.writeText(w).then(() =>
-    showToast(`"${w}" copied!`)
-  );
+  navigator.clipboard.writeText(w);
+  alert("Copied: " + w);
 }
-
-// ================= TOAST =================
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-// ================= INPUT HANDLERS =================
-const inp = document.getElementById('anagramInput');
-const clr = document.getElementById('clearBtn');
-
-inp.addEventListener('input', () => {
-  inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g,'');
-});
-
-clr.addEventListener('click', () => {
-  inp.value = '';
-  document.getElementById('anagramResults').style.display = 'none';
-});
-
-inp.addEventListener('keydown', e => {
-  if (e.key === 'Enter') solveAnagram();
-});
 </script>
+
+</body>
+</html>
