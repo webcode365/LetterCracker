@@ -352,7 +352,10 @@ const WORD_DB = {
       results.sort((a, b) => b.length - a.length || a.localeCompare(b));
     }
 
-    return results;
+    return results.map(word => ({
+  word: word,
+  points: this.getPoints(word)
+}));
   },
 
   groupByLength(words) {
