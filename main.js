@@ -321,3 +321,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const best = document.getElementById('gameBest');
   if (best) best.textContent = localStorage.getItem('lc_game_best') || '0';
 });
+
+async function loadVisitorInfo() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+
+    const city = data.city || "";
+    const country = data.country_name || "";
+    const ip = data.ip || "";
+
+    const visitorBar = document.getElementById("visitorBar");
+
+    if (visitorBar) {
+      visitorBar.innerHTML = `
+        <div class="visitor-bar-inner">
+          <span class="live-dot"></span>
+          <span>${city}, ${country} — IP: ${ip}</span>
+        </div>
+      `;
+    }
+
+  } catch (err) {
+    console.error("Visitor info failed:", err);
+  }
+}
+
+loadVisitorInfo();
