@@ -1,134 +1,119 @@
+// ===================== SAFE INIT =====================
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("LetterCracker loaded");
 
-// ===================== INIT =====================
-document.addEventListener('DOMContentLoaded', () => {
-  initApp();
+  safeRun(initApp);
 });
 
-function initApp() {
+function safeRun(fn) {
   try {
-    setupGlobals();
-    initOptionsPanel();
-    initClearButton();
-    initUnscramble();
-    initGameBestScore();
-    loadVisitorInfo();
-    setWOTD();
+    fn();
   } catch (e) {
-    console.error("Init error:", e);
+    console.error("GLOBAL ERROR:", e);
   }
 }
 
-// ===================== GLOBAL =====================
-let letterInput;
-
-function setupGlobals() {
-  letterInput = document.getElementById('letterInput');
+// ===================== APP INIT =====================
+function initApp() {
+  setupVisitor();
+  setupUnscramble();
 }
 
-// ===================== OPTIONS =====================
-function initOptionsPanel() {
-  const toggle = document.getElementById('optionsToggle');
-  const panel = document.getElementById('optionsPanel');
+// ===================== VISITOR (FIXED + SAFE) =====================
+function setupVisitor() {
+  const bar = document.getElementById("visitorBar");
+  if (!bar) return;
 
-  if (!toggle || !panel) return;
+  bar.innerHTML = `
+    <div class="visitor-bar-inner">
+      <span class="live-dot"></span>
+      <span>Detecting your location...</span>
+    </div>
+  `;
 
-  toggle.addEventListener('click', () => {
-    const open = panel.classList.toggle('open');
-    const arrow = toggle.querySelector('.toggle-arrow');
-    if (arrow) arrow.textContent = open ? '▴' : '▾';
-  });
-}
+  fetch("https://ipwho.is/")
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) throw new Error("API failed");
 
-// ===================== CLEAR =====================
-function initClearButton() {
-  const btn = document.getElementById('clearBtn');
-  if (!btn || !letterInput) return;
+      bar.innerHTML = `
+        <div class="visitor-bar-inner">
+          <span class="live-dot"></span>
+          <span>${data.city}, ${data.country} — IP: ${data.ip}</span>
+        </div>
+      `;
+    })
+    .catch(err => {
+      console.error("Visitor API error:", err);
 
-  btn.addEventListener('click', () => {
-    letterInput.value = '';
-  });
-
-  letterInput.addEventListener('input', () => {
-    letterInput.value = letterInput.value.toUpperCase().replace(/[^A-Z?*]/g, '');
-  });
-}
-
-// ===================== UNSCRAMBLE =====================
-function initUnscramble() {
-  const btn = document.getElementById('unscrambleBtn');
-
-  if (btn) btn.addEventListener('click', doUnscramble);
-
-  if (letterInput) {
-    letterInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') doUnscramble();
+      bar.innerHTML = `
+        <div class="visitor-bar-inner">
+          <span class="live-dot"></span>
+          <span>Location unavailable</span>
+        </div>
+      `;
     });
-  }
 }
 
-function doUnscramble() {
-  if (!letterInput) return;
+// ===================== UNSCRAMBLE SAFE =====================
+function setupUnscramble() {
+  const btn = document.getElementById("unscrambleBtn");
+  const input = document.getElementById("letterInput");
 
-  const letters = letterInput.value.trim();
+  if (!btn || !input) {
+    console.warn("Missing UI elements");
+    return;
+  }
+
+  btn.addEventListener("click", () => {
+    runSearch(input.value);
+  });
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") runSearch(input.value);
+  });
+}
+
+// ===================== MAIN SEARCH =====================
+function runSearch(letters) {
+  const results = document.getElementById("resultsSection");
+  const meta = document.getElementById("resultsMeta");
+  const list = document.getElementById("resultsByLength");
+
   if (!letters) return;
+  if (!results || !meta || !list) return;
 
-  const resultsSection = document.getElementById('resultsSection');
-  const meta = document.getElementById('resultsMeta');
-  const list = document.getElementById('resultsByLength');
+  results.style.display = "block";
 
-  if (!resultsSection || !meta || !list) return;
+  // 🔥 CRITICAL CHECK
+  if (typeof WORD_DB === "undefined") {
+    meta.textContent = "❌ words-db.js NOT loaded";
+    list.innerHTML = "";
+    console.error("WORD_DB missing!");
+    return;
+  }
 
-  resultsSection.style.display = 'block';
+  let words = [];
 
-  const words = WORD_DB?.unscramble ? WORD_DB.unscramble(letters, {}) : [];
+  try {
+    words = WORD_DB.unscramble(letters, {});
+  } catch (e) {
+    console.error("WORD_DB error:", e);
+    meta.textContent = "Database error";
+    return;
+  }
 
   if (!words.length) {
-    meta.textContent = "No results found";
+    meta.textContent = "No words found";
     list.innerHTML = "";
     return;
   }
 
   meta.textContent = `Found ${words.length} words`;
 
-  list.innerHTML = words.slice(0, 50).map(w =>
-    `<div class="word-chip">${w.word} <span>${w.points || ''}</span></div>`
-  ).join('');
-}
-
-// ===================== GAME BEST SCORE =====================
-function initGameBestScore() {
-  const el = document.getElementById('gameBest');
-  if (!el) return;
-  el.textContent = localStorage.getItem('lc_game_best') || '0';
-}
-
-// ===================== WORD OF THE DAY =====================
-function setWOTD() {
-  const word = document.getElementById('wotdWord');
-  const def = document.getElementById('wotdDef');
-  const pts = document.getElementById('wotdPoints');
-
-  if (word) word.textContent = "EPHEMERAL";
-  if (def) def.textContent = "Lasting a short time";
-  if (pts) pts.textContent = "15";
-}
-
-// ===================== VISITOR INFO (SAFE VERSION) =====================
-async function loadVisitorInfo() {
-  const el = document.getElementById("visitorText");
-  if (!el) return;
-
-  el.textContent = "Detecting your location...";
-
-  try {
-    const res = await fetch("https://ipwho.is/");
-    const data = await res.json();
-
-    if (!data.success) throw new Error();
-
-    el.textContent = `${data.city}, ${data.country} — IP: ${data.ip}`;
-
-  } catch (e) {
-    el.textContent = "Location unavailable";
-  }
+  list.innerHTML = words.slice(0, 60).map(w =>
+    `<div class="word-chip">
+      ${w.word} <span>${w.points || ""}</span>
+    </div>`
+  ).join("");
 }
