@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — LetterCracker</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="themeSwitcherSlot"></div>
+<div class="visitor-bar" id="visitorBar"><div class="visitor-bar-inner"><span class="live-dot"></span><span>Admin Area</span></div></div>
+<div id="navSlot"></div>
+
+<section class="page-hero">
+  <h1>Admin <span class="gradient-text">Login</span></h1>
+  <p>Secure access to the LetterCracker dashboard</p>
+</section>
+
+<div style="padding:3rem 1.5rem 6rem;">
+  <div class="form-card">
+    <h2>Sign In</h2>
+    <p>Enter your credentials to access the admin panel.</p>
+    <div class="alert alert-error" id="loginError" style="display:none">Incorrect username or password. Please try again.</div>
+    <div class="form-group">
+      <label>Username or Email</label>
+      <input type="text" id="adminUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="form-submit" onclick="doLogin()">Sign In →</button>
+    <div class="form-link" style="margin-top:0.75rem;">
+      <a href="forgot-password.html">Forgot password?</a>
+    </div>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);font-size:0.78rem;color:var(--text3);text-align:center;">
+      Default credentials: <code style="color:var(--accent)">admin</code> / <code style="color:var(--accent)">LetterCracker@2025!</code><br>
+      <span style="font-size:0.72rem;">Change these in Admin Panel → Settings</span>
+    </div>
+  </div>
+</div>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+// Admin credentials stored in localStorage (changeable from admin panel)
+function getAdminCreds() {
+  return {
+    user: localStorage.getItem('lc_admin_user') || 'admin',
+    pass: localStorage.getItem('lc_admin_pass') || 'LetterCracker@2025!'
+  };
+}
+
+function doLogin() {
+  const u = document.getElementById('adminUser').value.trim();
+  const p = document.getElementById('adminPass').value;
+  const err = document.getElementById('loginError');
+  const creds = getAdminCreds();
+  if ((u === creds.user || u === (localStorage.getItem('lc_admin_email') || 'admin@lettercracker.com')) && p === creds.pass) {
+    sessionStorage.setItem('lcAdmin', '1');
+    window.location.href = 'admin-panel.html';
+  } else {
+    err.style.display = 'block';
+    document.getElementById('adminPass').value = '';
+  }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>
