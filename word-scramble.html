@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Scramble Game — Free Online Word Unscramble Challenge | LetterCracker</title>
+<meta name="description" content="Play the free Word Scramble game on LetterCracker! Race the clock, unscramble words, earn points, and beat your high score. Mobile-friendly, no signup needed.">
+<meta name="keywords" content="word scramble game, word unscramble game, scramble words game, free word game online, unscramble word challenge">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://lettercracker.com/word-scramble.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="themeSwitcherSlot"></div>
+<div class="visitor-bar" id="visitorBar"><div class="visitor-bar-inner"><span class="live-dot"></span><span>Loading…</span></div></div>
+<div id="navSlot"></div>
+
+<section class="page-hero">
+  <h1>Word Scramble <span class="gradient-text">Game</span></h1>
+  <p>Race the clock, unscramble as many words as you can, and crush your high score!</p>
+</section>
+
+<!-- Top game ad -->
+<div class="container ad-slot" style="padding:1rem 1.5rem 0;">
+  <div class="ad-placeholder" style="min-height:70px;max-width:728px;margin:0 auto;">Game Page Leaderboard Ad</div>
+</div>
+
+<div style="max-width:680px;margin:0 auto;padding:1.5rem 1.5rem 5rem;">
+
+  <div class="game-card" id="gameCard">
+
+    <!-- START SCREEN -->
+    <div id="gameStart">
+      <div style="font-size:3.5rem;margin-bottom:1rem;">🎮</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:0.75rem;">Word Scramble Challenge</h2>
+      <p style="color:var(--text2);line-height:1.7;max-width:440px;margin:0 auto 1.5rem;">Unscramble as many words as you can in <strong>60 seconds</strong>. Short words = 1 pt, medium = 2 pts, long = 3 pts!</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.75rem;max-width:360px;margin-left:auto;margin-right:auto;">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;" id="startBestScore">0</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;">Best Score</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">60s</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;">Time Limit</div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;">
+          <div style="font-size:1.5rem;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif;">50+</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-top:4px;">Word Pool</div>
+        </div>
+      </div>
+
+      <button class="game-submit" onclick="startGame()" style="width:100%;padding:16px;font-size:1.15rem;border-radius:14px;">
+        ▶ Start Game
+      </button>
+    </div>
+
+    <!-- GAME PLAY SCREEN -->
+    <div id="gamePlay" style="display:none">
+      <div class="game-hud">
+        <div class="hud-item"><div class="hud-label">Score</div><div class="hud-value" id="gameScore">0</div></div>
+        <div class="hud-item"><div class="hud-label">Time</div><div class="hud-value" id="gameTimer">60</div></div>
+        <div class="hud-item"><div class="hud-label">Best</div><div class="hud-value" id="gameBest">0</div></div>
+        <div class="hud-item"><div class="hud-label">Words</div><div class="hud-value" id="wordsCount">0</div></div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="timerBar" style="width:100%"></div></div>
+
+      <div class="scrambled-word" id="gameScrambled">—</div>
+
+      <div class="game-feedback" id="gameFeedback"></div>
+
+      <div class="game-input-row">
+        <input type="text" class="game-input" id="gameInput"
+          placeholder="Type your answer…"
+          autocorrect="off" autocapitalize="off" spellcheck="false"
+          maxlength="20">
+        <button class="game-submit" onclick="checkGameAnswer()">✓</button>
+      </div>
+
+      <div class="game-btns">
+        <button class="game-btn" onclick="skipWord()" title="Skip this word">Skip ⟶</button>
+        <button class="game-btn" onclick="showHint()" title="Show first letter hint">Hint 💡</button>
+        <button class="game-btn danger" onclick="resetGame()" title="Restart game">Restart ↺</button>
+      </div>
+
+      <!-- Show answer after skip -->
+      <div class="game-answer" id="gameAnswer">
+        <div style="font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Correct Answer Was</div>
+        <div class="answer-word" id="answerWord">—</div>
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="gameOver" style="display:none;text-align:center;">
+      <div style="font-size:3.5rem;margin-bottom:0.75rem;" id="gameEmoji">🏆</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:0.5rem;">Time's Up!</h2>
+      <p style="color:var(--text2);margin-bottom:0.25rem;">Your score:</p>
+      <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent);margin-bottom:0.5rem;" id="finalScore">0</div>
+      <p style="font-size:0.82rem;color:var(--text3);margin-bottom:0.25rem;">Words unscrambled: <strong id="finalWords" style="color:var(--text2);">0</strong></p>
+      <p style="font-size:0.82rem;color:var(--text3);margin-bottom:1.5rem;">All-time best: <strong id="bestScoreDisplay" style="color:var(--green);">0</strong></p>
+
+      <!-- Ad in game over screen for visibility -->
+      <div class="ad-slot" style="margin-bottom:1.5rem;">
+        <div class="ad-placeholder" style="min-height:90px;">Game Over Ad — High Visibility</div>
+      </div>
+
+      <div class="game-btns" style="justify-content:center;">
+        <button class="game-submit" onclick="startGame()" style="padding:14px 30px;font-size:1rem;">▶ Play Again</button>
+        <button class="game-btn" onclick="resetToStart()">← Back</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ad below game -->
+  <div class="ad-slot" style="margin-top:1.5rem;">
+    <div class="ad-placeholder" style="min-height:90px;">Below-Game Ad 728×90</div>
+  </div>
+
+  <!-- SEO Content -->
+  <div style="padding-top:1.5rem;">
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;">How to Play Word Scramble</h2>
+    <p style="color:var(--text2);line-height:1.8;margin-bottom:1rem;">A scrambled word appears on screen. Your job is to unscramble it and type the correct word before the 60-second timer runs out. Every correct answer earns you points — shorter words are worth 1 point, 5–6 letter words earn 2 points, and words of 7+ letters earn a bonus 3 points. Use the <strong>Skip</strong> button to pass on a difficult word, and <strong>Hint</strong> to reveal the first letter. Beat your personal best and challenge friends to do the same!</p>
+
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin:1.5rem 0 0.75rem;">Tips to Improve Your Score</h2>
+    <ul style="color:var(--text2);line-height:2;padding-left:1.25rem;margin-bottom:1rem;">
+      <li>Look for common prefixes like <strong>UN-, RE-, PRE-</strong> to quickly identify word structure</li>
+      <li>Common suffixes like <strong>-ING, -TION, -ED, -ER</strong> often appear — spot them first</li>
+      <li>Don't waste time on a hard word — use Skip and come back to momentum</li>
+      <li>Short words (3–4 letters) are faster to recognize and worth consistent points</li>
+      <li>Practice regularly — pattern recognition improves with every game!</li>
+    </ul>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;">
+      <a href="index.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">🔀 Word Unscrambler</a>
+      <a href="anagram.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">🔄 Anagram Solver</a>
+      <a href="wordle.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">🟩 Wordle Solver</a>
+    </div>
+  </div>
+</div>
+
+
+<section class="amazon-section">
+  <div class="container">
+    <div class="amazon-header">
+      <h3>Level Up Your Word Game 🎯</h3>
+      <p style="color:var(--text3);font-size:0.82rem;margin-top:4px;">Gear up with top-rated word game favourites</p>
+    </div>
+    <div class="amazon-grid">
+      <a href="https://amzn.to/scrabble-classic" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">🎲</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Scrabble Classic Board Game</div>
+          <div class="amazon-stars">★★★★★</div>
+          <div class="amazon-price">$24.99</div>
+          <div class="amazon-btn">Shop on Amazon →</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/bananagrams" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">🔤</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Bananagrams Word Tile Game</div>
+          <div class="amazon-stars">★★★★★</div>
+          <div class="amazon-price">$14.99</div>
+          <div class="amazon-btn">Shop on Amazon →</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/wwf-board" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">🏆</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Words With Friends Board Game</div>
+          <div class="amazon-stars">★★★★☆</div>
+          <div class="amazon-price">$29.99</div>
+          <div class="amazon-btn">Shop on Amazon →</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/oxford-thesaurus" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">🔍</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Oxford American Writer's Thesaurus</div>
+          <div class="amazon-stars">★★★★☆</div>
+          <div class="amazon-price">$22.99</div>
+          <div class="amazon-btn">Shop on Amazon →</div>
+        </div>
+      </a>
+    </div>
+    <p class="amazon-disclaimer">* As an Amazon Associate, LetterCracker earns from qualifying purchases.</p>
+  </div>
+</section>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+<script src="shared.js"></script>
+<script>
+const GAME_WORDS = [
+  'PLANET','GARDEN','BRIDGE','CASTLE','FLOWER','MONKEY','SHADOW','TURTLE',
+  'CANDLE','BUTTER','SIMPLE','ORANGE','PURPLE','SILVER','GOLDEN','WINTER',
+  'SPRING','SUMMER','DRAGON','PIRATE','JUNGLE','ROCKET','FINGER','MIRROR',
+  'WONDER','BLANKET','CHICKEN','DOLPHIN','FREEDOM','HARVEST','JOURNEY','KINGDOM',
+  'LIBRARY','MORNING','NETWORK','OUTSIDE','PATTERN','QUARTER','RAINBOW','SERIOUS',
+  'THUNDER','UNIFORM','VILLAGE','WARRIOR','VICTORY','WELCOME','CRYSTAL','MYSTERY',
+  'PERFECT','STRANGE','BALANCE','CABINET','CAPTAIN','CENTURY','CLIMATE','COMFORT',
+  'CURIOUS','DEFENSE','EXAMPLE','FACTORY','FORTUNE','GENERAL','GRAMMAR','HEALTHY'
+];
+
+let gameState = { active:false, score:0, wordsAnswered:0, timer:null, timeLeft:60, currentWord:'', wordPool:[] };
+
+function showToast(msg) {
+  const t = document.getElementById('toast'); if(!t)return;
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+function shuffleArr(arr) { return [...arr].sort(()=>Math.random()-0.5); }
+
+function scrambleWord(word) {
+  let s; const letters = word.split('');
+  let attempts = 0;
+  do { s = shuffleArr(letters).join(''); attempts++; } while (s === word && attempts < 10);
+  return s;
+}
+
+function startGame() {
+  gameState = { active:true, score:0, wordsAnswered:0, timer:null, timeLeft:60, currentWord:'', wordPool:shuffleArr(GAME_WORDS) };
+  document.getElementById('gameStart').style.display = 'none';
+  document.getElementById('gameOver').style.display = 'none';
+  document.getElementById('gamePlay').style.display = 'block';
+  document.getElementById('gameAnswer').classList.remove('visible');
+  document.getElementById('gameFeedback').textContent = '';
+  updateHUD();
+  nextWord();
+  if (gameState.timer) clearInterval(gameState.timer);
+  gameState.timer = setInterval(() => {
+    gameState.timeLeft--;
+    updateTimer();
+    if (gameState.timeLeft <= 0) endGame();
+  }, 1000);
+  const inp = document.getElementById('gameInput');
+  inp.value = ''; inp.focus();
+  inp.onkeydown = e => { if(e.key==='Enter') checkGameAnswer(); };
+}
+
+function updateTimer() {
+  const el = document.getElementById('gameTimer');
+  const bar = document.getElementById('timerBar');
+  if(el) { el.textContent=gameState.timeLeft; el.className='hud-value'+(gameState.timeLeft<=10?' timer-warning':''); }
+  if(bar) bar.style.width = (gameState.timeLeft/60*100)+'%';
+}
+
+function nextWord() {
+  if (gameState.wordPool.length === 0) gameState.wordPool = shuffleArr(GAME_WORDS);
+  gameState.currentWord = gameState.wordPool.pop();
+  const scrambled = scrambleWord(gameState.currentWord);
+  const el = document.getElementById('gameScrambled');
+  if (el) el.innerHTML = scrambled.split('').map(l=>`<span class="letter-tile">${l}</span>`).join('');
+  document.getElementById('gameInput').value = '';
+  document.getElementById('gameAnswer').classList.remove('visible');
+  document.getElementById('gameFeedback').textContent = '';
+}
+
+function checkGameAnswer() {
+  if (!gameState.active) return;
+  const guess = (document.getElementById('gameInput').value||'').trim().toUpperCase();
+  if (!guess) return;
+  if (guess === gameState.currentWord) {
+    const pts = gameState.currentWord.length >= 7 ? 3 : gameState.currentWord.length >= 5 ? 2 : 1;
+    gameState.score += pts;
+    gameState.wordsAnswered++;
+    updateHUD();
+    setFeedback(`✓ Correct! +${pts} pt${pts>1?'s':''}`, true);
+    document.querySelectorAll('.letter-tile').forEach(t=>t.style.color='var(--green)');
+    setTimeout(nextWord, 550);
+  } else {
+    setFeedback('✗ Try again!', false);
+    document.getElementById('gameInput').value = '';
+    document.querySelectorAll('.letter-tile').forEach(t=>{ t.style.color='var(--red)'; setTimeout(()=>t.style.color='',400); });
+  }
+}
+
+function setFeedback(msg, ok) {
+  const el = document.getElementById('gameFeedback');
+  if(!el)return; el.textContent=msg;
+  el.className='game-feedback '+(ok?'feedback-correct':'feedback-wrong');
+}
+
+function skipWord() {
+  if (!gameState.active) return;
+  const ans = document.getElementById('gameAnswer');
+  const ansWord = document.getElementById('answerWord');
+  if(ans&&ansWord){ ansWord.textContent=gameState.currentWord; ans.classList.add('visible'); }
+  setTimeout(nextWord, 1100);
+}
+
+function showHint() {
+  if (!gameState.active) return;
+  setFeedback(`Hint: ${gameState.currentWord[0]}${'_'.repeat(gameState.currentWord.length-1)}`, true);
+}
+
+function updateHUD() {
+  const best = Math.max(parseInt(localStorage.getItem('lc_game_best')||'0'), gameState.score);
+  localStorage.setItem('lc_game_best', best);
+  const s = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+  s('gameScore',gameState.score); s('gameBest',best); s('wordsCount',gameState.wordsAnswered);
+}
+
+function endGame() {
+  gameState.active = false; clearInterval(gameState.timer);
+  const best = Math.max(parseInt(localStorage.getItem('lc_game_best')||'0'), gameState.score);
+  localStorage.setItem('lc_game_best', best);
+  document.getElementById('gamePlay').style.display = 'none';
+  document.getElementById('gameOver').style.display = 'block';
+  document.getElementById('finalScore').textContent = gameState.score;
+  document.getElementById('finalWords').textContent = gameState.wordsAnswered;
+  document.getElementById('bestScoreDisplay').textContent = best;
+  document.getElementById('gameEmoji').textContent = gameState.score >= 20 ? '🏆' : gameState.score >= 10 ? '🥈' : '🎮';
+}
+
+function resetGame() { clearInterval(gameState.timer); gameState.active=false; startGame(); }
+function resetToStart() {
+  clearInterval(gameState.timer); gameState.active=false;
+  document.getElementById('gamePlay').style.display='none';
+  document.getElementById('gameOver').style.display='none';
+  document.getElementById('gameStart').style.display='block';
+}
+
+// Init best
+document.addEventListener('DOMContentLoaded',()=>{
+  const b=localStorage.getItem('lc_game_best')||'0';
+  const s=document.getElementById('startBestScore'); if(s) s.textContent=b;
+});
+</script>
+</body>
+</html>
