@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<!-- PHASE 1: Theme flash prevention — inline script before CSS -->
+<script>
+(function(){var t=localStorage.getItem('lc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Free Random Word Generator — Generate Words by Length &amp; Letter | LetterCracker</title>
+<meta name="description" content="Generate random English words instantly. Filter by word length, starting letter, and quantity. Free random word generator for games, writing, brainstorming, and education.">
+<meta name="keywords" content="random word generator, generate random words, random word maker, word generator, random english words, random word list generator">
+<meta name="robots" content="index, follow">
+<!-- PHASE 1: Canonical corrected to lettercracker.info -->
+<link rel="canonical" href="https://lettercracker.info/random-word.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Random Word Generator | LetterCracker">
+<meta property="og:description" content="Generate random English words instantly. Filter by word length, starting letter, and quantity.">
+<meta property="og:url" content="https://lettercracker.info/random-word.html">
+<meta property="og:image" content="https://lettercracker.info/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Random Word Generator | LetterCracker">
+<meta name="twitter:description" content="Generate random English words instantly by length, starting letter, and quantity.">
+<meta name="twitter:image" content="https://lettercracker.info/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* PHASE 2: options-grid stacks on mobile */
+@media (max-width:768px) {
+  .page-hero { padding:1rem !important; }
+  .container { padding:1rem !important; }
+  .rw-content-wrap { padding:1rem 1rem 3rem !important; }
+  .tool-card { padding:1rem !important; }
+  .options-grid { grid-template-columns:1fr !important; }
+  /* PHASE 2: chips flex-wrap to prevent horizontal scroll */
+  #rwChips { display:flex !important; flex-wrap:wrap !important; gap:6px !important; }
+  .results-actions { flex-wrap:wrap; gap:6px; }
+}
+/* Ensure chips always wrap on all screen sizes */
+#rwChips { display:flex; flex-wrap:wrap; gap:6px; }
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+</head>
+<body>
+<div id="themeSwitcherSlot"></div>
+<div class="visitor-bar" id="visitorBar"><div class="visitor-bar-inner"><span class="live-dot"></span><span>Loading…</span></div></div>
+<div id="navSlot"></div>
+
+<section class="page-hero">
+  <h1>Random Word <span class="gradient-text">Generator</span></h1>
+  <p>Generate random words by length, starting letter, or count — for games, writing, and beyond.</p>
+</section>
+
+<div class="container ad-slot" style="padding:1rem 1.5rem 0;">
+  <div class="ad-placeholder" style="min-height:70px;max-width:728px;margin:0 auto;">Leaderboard Ad</div>
+</div>
+
+<div class="rw-content-wrap" style="max-width:720px;margin:0 auto;padding:1.5rem 1.5rem 5rem;">
+
+  <div class="tool-card">
+    <!-- PHASE 2: options-grid stacks to 1fr on mobile via media query above -->
+    <div class="options-grid" style="margin-bottom:1.25rem;">
+      <div class="option-group">
+        <label>Word Length</label>
+        <select id="rwLen">
+          <option value="any">Any length</option>
+          <option value="3">3 letters</option>
+          <option value="4">4 letters</option>
+          <option value="5">5 letters</option>
+          <option value="6">6 letters</option>
+          <option value="7">7 letters</option>
+          <option value="8">8+ letters</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>How Many Words</label>
+        <select id="rwCount">
+          <option value="5">5 words</option>
+          <option value="10" selected>10 words</option>
+          <option value="20">20 words</option>
+          <option value="50">50 words</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Starts With (optional)</label>
+        <input type="text" id="rwStart" placeholder="e.g. st" maxlength="4" autocorrect="off" autocomplete="off">
+      </div>
+      <div class="option-group">
+        <label>Ends With (optional)</label>
+        <input type="text" id="rwEnd" placeholder="e.g. ing" maxlength="4" autocorrect="off" autocomplete="off">
+      </div>
+    </div>
+
+    <button class="unscramble-btn" onclick="generateRandom()">
+      &#127922; Generate Random Words
+    </button>
+
+    <div class="ad-slot" style="margin-top:10px;">
+      <div class="ad-placeholder ad-placeholder-sm">Responsive Ad</div>
+    </div>
+
+    <div class="results-section" id="rwResults" style="margin-top:1.5rem;display:none;">
+      <div class="results-header">
+        <div class="results-meta" id="rwMeta"></div>
+        <div class="results-actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="action-btn" onclick="copyRandom()">&#128203; Copy All</button>
+          <button class="action-btn" onclick="generateRandom()">&#127922; Regenerate</button>
+        </div>
+      </div>
+      <div class="ad-slot" style="margin-bottom:10px;">
+        <div class="ad-placeholder ad-placeholder-sm">Inline Ad</div>
+      </div>
+      <!-- PHASE 2: flex + flex-wrap on #rwChips via style above -->
+      <div class="word-chips" id="rwChips"></div>
+    </div>
+  </div>
+
+  <div class="ad-slot" style="margin:1.5rem 0;">
+    <div class="ad-placeholder" style="min-height:90px;">Mid-Content Ad</div>
+  </div>
+
+  <!-- SEO Content -->
+  <div style="padding-top:1rem;">
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;">What Can You Use a Random Word Generator For?</h2>
+    <p style="color:var(--text2);line-height:1.8;margin-bottom:1rem;">A random word generator has a surprising number of practical uses. Writers use it to overcome creative blocks and generate story prompts. Game designers use it to create vocabulary challenges. Teachers use it for classroom spelling and vocabulary exercises. Developers use random words for test data. Whatever your need, LetterCracker's generator gives you valid English words from our <strong>170,000-word database</strong> — instantly and for free.</p>
+
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin:1.5rem 0 0.75rem;">Popular Use Cases</h2>
+    <ul style="color:var(--text2);line-height:2;padding-left:1.25rem;margin-bottom:1rem;">
+      <li><strong style="color:var(--text1);">Word games</strong> — Generate challenge words for Scrabble practice or classroom games</li>
+      <li><strong style="color:var(--text1);">Creative writing</strong> — Break writer's block with random word prompts</li>
+      <li><strong style="color:var(--text1);">Password inspiration</strong> — Use random words as memorable passphrases</li>
+      <li><strong style="color:var(--text1);">Vocabulary building</strong> — Discover new words and expand your lexicon daily</li>
+      <li><strong style="color:var(--text1);">Improv &amp; party games</strong> — Generate words for storytelling games like "Once Upon a Time"</li>
+      <li><strong style="color:var(--text1);">Coding &amp; testing</strong> — Create realistic test data with actual English words</li>
+    </ul>
+
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin:1.5rem 0 0.75rem;">Related Tools</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="index.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#128256; Word Unscrambler</a>
+      <a href="anagram.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#128260; Anagram Solver</a>
+      <a href="dictionary.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#128214; Dictionary Check</a>
+      <a href="wordle.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#129001; Wordle Solver</a>
+    </div>
+  </div>
+</div>
+
+<section class="amazon-section">
+  <div class="container">
+    <div class="amazon-header">
+      <h3>Build Your Word Power &#128640;</h3>
+      <p style="color:var(--text3);font-size:0.82rem;margin-top:4px;">Top picks for word game fans and vocabulary builders</p>
+    </div>
+    <div class="amazon-grid">
+      <a href="https://amzn.to/word-power" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128161;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Word Power Made Easy</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$12.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/bananagrams" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128308;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Bananagrams Word Tile Game</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$14.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/scrabble-classic" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#127922;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Scrabble Classic Board Game</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$24.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/merriam-dict" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128214;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Merriam-Webster Collegiate Dictionary</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$27.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+    </div>
+    <p class="amazon-disclaimer">* As an Amazon Associate, LetterCracker earns from qualifying purchases.</p>
+  </div>
+</section>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+<script src="words-db.js"></script>
+<script src="shared.js"></script>
+<script>
+function generateRandom() {
+  var len   = document.getElementById('rwLen').value;
+  var count = parseInt(document.getElementById('rwCount').value);
+  var start = document.getElementById('rwStart').value.trim().toLowerCase();
+  var end   = document.getElementById('rwEnd').value.trim().toLowerCase();
+
+  /* Load appropriate shard(s) based on selected length */
+  var loadPromise;
+  if (len === 'any') {
+    loadPromise = WORD_DB.loadAll();
+  } else if (len === '8') {
+    loadPromise = WORD_DB.loadAll(); /* 8+ needs multiple shards */
+  } else {
+    loadPromise = WORD_DB.loadByLengths([parseInt(len)]);
+  }
+
+  loadPromise.then(function(words) {
+    if (len !== 'any') {
+      words = len === '8'
+        ? words.filter(function(w){ return w.length >= 8; })
+        : words.filter(function(w){ return w.length === parseInt(len); });
+    }
+    if (start) words = words.filter(function(w){ return w.startsWith(start); });
+    if (end)   words = words.filter(function(w){ return w.endsWith(end); });
+
+    /* Fisher-Yates shuffle */
+    for (var i = words.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = words[i]; words[i] = words[j]; words[j] = tmp;
+    }
+
+    var result = words.slice(0, count);
+    var resultsEl = document.getElementById('rwResults');
+    resultsEl.style.display = 'block';
+    document.getElementById('rwMeta').innerHTML = 'Generated <strong>' + result.length + '</strong> random word' + (result.length !== 1 ? 's' : '');
+
+    if (result.length === 0) {
+      document.getElementById('rwChips').innerHTML = '<p style="color:var(--text3);font-size:0.9rem;padding:0.5rem 0;">No words match your filters. Try adjusting the length or starting letter.</p>';
+    } else {
+      document.getElementById('rwChips').innerHTML = result.map(function(w) {
+        return '<span class="word-chip" onclick="copyWord(\'' + w.toUpperCase() + '\')">' + w.toUpperCase() + '<span class="pts">' + WORD_DB.getPoints(w) + 'pt</span></span>';
+      }).join('');
+    }
+    resultsEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  });
+}
+
+function copyWord(w) {
+  navigator.clipboard && navigator.clipboard.writeText(w).then(function(){ showToast('"' + w + '" copied!'); });
+}
+
+function copyRandom() {
+  var chips = document.querySelectorAll('#rwChips .word-chip');
+  var text  = Array.from(chips).map(function(c){ return c.textContent.replace(/\d+pt$/,'').trim(); }).join('\n');
+  navigator.clipboard && navigator.clipboard.writeText(text).then(function(){ showToast('Copied ' + chips.length + ' words!'); });
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
+}
+</script>
+</body>
+</html>

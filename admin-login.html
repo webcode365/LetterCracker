@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<!-- PHASE 1: Theme flash prevention — must be first script, before any CSS -->
+<script>
+(function(){var t=localStorage.getItem('lc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Admin Login — LetterCracker</title>
+<!-- PHASE 3: noindex/nofollow — admin pages must never be indexed -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* PHASE 2: Mobile padding reduction */
+@media (max-width: 768px) {
+  .page-hero { padding: 1rem !important; }
+  .container { padding: 1rem !important; }
+  .form-card { margin: 0 0.5rem; }
+}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+</head>
+<body>
+
+<div id="themeSwitcherSlot"></div>
+<div class="visitor-bar" id="visitorBar"><div class="visitor-bar-inner"><span class="live-dot"></span><span>Admin Area</span></div></div>
+<div id="navSlot"></div>
+
+<section class="page-hero">
+  <h1>Admin <span class="gradient-text">Login</span></h1>
+  <p>Secure access to the LetterCracker dashboard</p>
+</section>
+
+<div style="padding:3rem 1.5rem 6rem;">
+  <div class="form-card">
+    <h2>Sign In</h2>
+    <p>Enter your credentials to access the admin panel.</p>
+    <div class="alert alert-error" id="loginError" style="display:none"></div>
+    <div class="form-group">
+      <label>Username or Email</label>
+      <input type="text" id="adminUser" placeholder="Username" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <!-- Issue 14: Math CAPTCHA -->
+    <div class="form-group" id="captchaGroup">
+      <label id="captchaLabel" style="font-weight:600;">Security Check: <span id="captchaQuestion" style="color:var(--accent);font-size:1.05rem;"></span></label>
+      <input type="number" id="captchaAnswer" placeholder="Your answer" autocomplete="off" style="max-width:160px;">
+    </div>
+
+    <div id="lockoutNotice" style="display:none;padding:.75rem 1rem;background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.25);border-radius:10px;font-size:.82rem;color:var(--red);margin-bottom:.75rem;">🔒 Too many failed attempts. Please wait <span id="lockoutTimer"></span> before trying again.</div>
+
+    <button class="form-submit" id="loginSubmitBtn" onclick="doLogin()">Sign In →</button>
+    <div class="form-link" style="margin-top:0.75rem;">
+      <a href="forgot-password.html">Forgot password?</a>
+    </div>
+  </div>
+</div>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+/* ── Credentials ── */
+function getAdminCreds() {
+  return {
+    user: localStorage.getItem('lc_admin_user') || 'admin',
+    pass: localStorage.getItem('lc_admin_pass') || 'LetterCracker@2025!'
+  };
+}
+
+/* ── Issue 14: Math CAPTCHA ── */
+var captchaCorrect = 0;
+function genCaptcha() {
+  var ops = ['+', '+', '-', '×'];
+  var op = ops[Math.floor(Math.random() * ops.length)];
+  var a, b;
+  if (op === '-') { a = 5 + Math.floor(Math.random() * 10); b = 1 + Math.floor(Math.random() * (a - 1)); captchaCorrect = a - b; }
+  else if (op === '×') { a = 2 + Math.floor(Math.random() * 8); b = 2 + Math.floor(Math.random() * 8); captchaCorrect = a * b; }
+  else { a = 1 + Math.floor(Math.random() * 20); b = 1 + Math.floor(Math.random() * 20); captchaCorrect = a + b; }
+  document.getElementById('captchaQuestion').textContent = a + ' ' + op + ' ' + b + ' = ?';
+  document.getElementById('captchaAnswer').value = '';
+}
+
+/* ── Rate limiting (5 attempts → 5-min lockout) ── */
+var MAX_ATTEMPTS = 5;
+var LOCKOUT_MS = 5 * 60 * 1000;
+var lockoutInterval = null;
+
+function getAttempts() { return JSON.parse(localStorage.getItem('lc_login_attempts') || '{"count":0,"since":0}'); }
+function setAttempts(o) { localStorage.setItem('lc_login_attempts', JSON.stringify(o)); }
+function isLockedOut() {
+  var a = getAttempts();
+  if (a.count >= MAX_ATTEMPTS) {
+    var remaining = LOCKOUT_MS - (Date.now() - a.since);
+    if (remaining > 0) return remaining;
+    setAttempts({ count: 0, since: 0 }); return 0;
+  }
+  return 0;
+}
+function startLockoutUI(remaining) {
+  document.getElementById('loginSubmitBtn').disabled = true;
+  document.getElementById('lockoutNotice').style.display = 'block';
+  if (lockoutInterval) clearInterval(lockoutInterval);
+  lockoutInterval = setInterval(function() {
+    remaining -= 1000;
+    if (remaining <= 0) {
+      clearInterval(lockoutInterval);
+      document.getElementById('loginSubmitBtn').disabled = false;
+      document.getElementById('lockoutNotice').style.display = 'none';
+      setAttempts({ count: 0, since: 0 });
+      genCaptcha();
+      return;
+    }
+    var m = Math.floor(remaining / 60000); var s = Math.ceil((remaining % 60000) / 1000);
+    document.getElementById('lockoutTimer').textContent = m + 'm ' + s + 's';
+  }, 1000);
+  var m = Math.floor(remaining / 60000); var s = Math.ceil((remaining % 60000) / 1000);
+  document.getElementById('lockoutTimer').textContent = m + 'm ' + s + 's';
+}
+
+function doLogin() {
+  /* Lockout check */
+  var remaining = isLockedOut();
+  if (remaining > 0) { startLockoutUI(remaining); return; }
+
+  /* CAPTCHA check */
+  var captchaVal = parseInt(document.getElementById('captchaAnswer').value, 10);
+  var errEl = document.getElementById('loginError');
+  if (isNaN(captchaVal) || captchaVal !== captchaCorrect) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Security check failed. Please solve the math problem.';
+    genCaptcha();
+    return;
+  }
+
+  /* Credential check */
+  var u = document.getElementById('adminUser').value.trim();
+  var p = document.getElementById('adminPass').value;
+  var creds = getAdminCreds();
+  var storedEmail = localStorage.getItem('lc_admin_email') || 'admin@lettercracker.info';
+  if ((u === creds.user || u === storedEmail) && p === creds.pass) {
+    setAttempts({ count: 0, since: 0 });
+    sessionStorage.setItem('lcAdmin', '1');
+    window.location.href = 'admin-panel.html';
+  } else {
+    var a = getAttempts();
+    a.count = (a.count || 0) + 1;
+    if (a.count === 1) a.since = Date.now();
+    setAttempts(a);
+    var left = MAX_ATTEMPTS - a.count;
+    if (a.count >= MAX_ATTEMPTS) {
+      startLockoutUI(LOCKOUT_MS);
+    } else {
+      errEl.style.display = 'block';
+      errEl.textContent = 'Incorrect username or password. ' + left + ' attempt' + (left !== 1 ? 's' : '') + ' remaining.';
+    }
+    document.getElementById('adminPass').value = '';
+    genCaptcha();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  genCaptcha();
+  var remaining = isLockedOut();
+  if (remaining > 0) startLockoutUI(remaining);
+});
+document.addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+</script>

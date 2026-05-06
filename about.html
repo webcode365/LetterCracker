@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<!-- PHASE 1: Theme flash prevention — must be first script, before any CSS -->
+<script>
+(function(){var t=localStorage.getItem('lc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>About LetterCracker — The Fastest Free Word Unscrambler Online</title>
+<meta name="description" content="Learn about LetterCracker, the free word unscrambler trusted by thousands of Scrabble, Words with Friends, and Wordle players worldwide. Built fast, free forever.">
+<meta name="robots" content="index, follow">
+<!-- PHASE 1: Canonical corrected to lettercracker.info -->
+<link rel="canonical" href="https://lettercracker.info/about.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="About LetterCracker — The Fastest Free Word Unscrambler Online">
+<meta property="og:description" content="Learn about LetterCracker, the free word unscrambler trusted by thousands of Scrabble, Words with Friends, and Wordle players worldwide.">
+<meta property="og:url" content="https://lettercracker.info/about.html">
+<meta property="og:image" content="https://lettercracker.info/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About LetterCracker — Free Word Unscrambler">
+<meta name="twitter:description" content="Built by word nerds, for word nerds. Free forever.">
+<meta name="twitter:image" content="https://lettercracker.info/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* About stats grid: 4-up → 2×2 → 1-col */
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.about-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  text-align: center;
+}
+.about-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.about-stat-label {
+  font-size: 0.78rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}
+@media (max-width: 860px) {
+  .about-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* PHASE 2: Mobile responsiveness */
+@media (max-width: 768px) {
+  .about-stats-grid { grid-template-columns: 1fr; }
+  .page-hero { padding: 1rem !important; }
+  .container { padding: 1rem !important; }
+  .about-content-wrap { padding: 1.5rem 1rem 3rem !important; }
+}
+@media (max-width: 420px) {
+  .about-stats-grid { grid-template-columns: 1fr; }
+  .about-stat-num { font-size: 1.6rem; }
+}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+</head>
+<body>
+<div id="themeSwitcherSlot"></div>
+<div class="visitor-bar" id="visitorBar"><div class="visitor-bar-inner"><span class="live-dot"></span><span>Loading…</span></div></div>
+<div id="navSlot"></div>
+
+<section class="page-hero">
+  <h1>About <span class="gradient-text">LetterCracker</span></h1>
+  <p>Built by word nerds, for word nerds. Free forever.</p>
+</section>
+
+<!-- Ad slot -->
+<div class="container ad-slot" id="adAboveContent" style="padding-top:1.5rem;">
+  <div class="ad-placeholder" style="min-height:90px;">Leaderboard Ad 728×90</div>
+</div>
+
+<div class="about-content-wrap" style="max-width:780px;margin:0 auto;padding:2.5rem 1.5rem 5rem;">
+  <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">Our Story</h2>
+  <p style="color:var(--text2);line-height:1.8;margin-bottom:1.5rem;">LetterCracker was born out of frustration with slow, cluttered, and outdated word tools that disrupted the flow of gameplay. We are a passionate team of developers and avid word game enthusiasts who wanted something faster, smarter, and beautifully designed — a tool we would actually want to use ourselves in the middle of a game.</p>
+
+  <p style="color:var(--text2);line-height:1.8;margin-bottom:1.5rem;">What started as a weekend project quickly evolved into a full-featured word game utility suite, now trusted by thousands of players every day from over 80 countries around the world.</p>
+
+  <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">Our Mission</h2>
+  <p style="color:var(--text2);line-height:1.8;margin-bottom:1.5rem;">Our mission is simple: make every word game more enjoyable by giving players instant access to the best possible word tools — completely free, always. Whether you are a competitive Scrabble tournament player, a daily Wordle devotee, or someone who just loves word puzzles, LetterCracker has the right tool for you.</p>
+
+  <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">What We Offer</h2>
+  <ul style="color:var(--text2);line-height:2;padding-left:1.25rem;margin-bottom:1.5rem;">
+    <li><strong style="color:var(--text1);">Word Unscrambler</strong> — Find every valid word from any set of letters in milliseconds.</li>
+    <li><strong style="color:var(--text1);">Anagram Solver</strong> — Discover all hidden anagrams for crosswords and puzzles.</li>
+    <li><strong style="color:var(--text1);">Wordle Solver</strong> — Crack any Wordle in three guesses or fewer.</li>
+    <li><strong style="color:var(--text1);">Dictionary Checker</strong> — Instantly verify any word across multiple official dictionaries.</li>
+    <li><strong style="color:var(--text1);">Random Word Generator</strong> — Generate words for games, writing, and education.</li>
+    <li><strong style="color:var(--text1);">Word Scramble Game</strong> — Challenge yourself with a timed word scramble game.</li>
+  </ul>
+
+  <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">Why LetterCracker?</h2>
+  <p style="color:var(--text2);line-height:1.8;margin-bottom:1.5rem;">Unlike other word tools that charge premium fees or bombard you with ads, LetterCracker is designed to be <strong>lightning fast</strong>, <strong>beautifully minimal</strong>, and <strong>completely free</strong>. We run entirely in your browser — no server round trips, no sign-ups, no tracking. Just results.</p>
+
+  <!-- Stats grid: 4-across on wide screens, 2x2 on medium, 1-col on mobile -->
+  <div class="about-stats-grid">
+    <div class="about-stat-card">
+      <div class="about-stat-num">170K+</div>
+      <div class="about-stat-label">Words in Database</div>
+    </div>
+    <div class="about-stat-card">
+      <div class="about-stat-num">80+</div>
+      <div class="about-stat-label">Countries Served</div>
+    </div>
+    <div class="about-stat-card">
+      <div class="about-stat-num">3</div>
+      <div class="about-stat-label">Dictionaries Supported</div>
+    </div>
+    <div class="about-stat-card">
+      <div class="about-stat-num">Free</div>
+      <div class="about-stat-label">Always &amp; Forever</div>
+    </div>
+  </div>
+
+  <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.75rem;">Contact &amp; Feedback</h2>
+  <p style="color:var(--text2);line-height:1.8;margin-bottom:1rem;">We love hearing from our community. Have a suggestion, a bug report, or just want to say hello? <a href="contact.html" style="color:var(--accent);">Get in touch</a> — we read every message.</p>
+
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:white;padding:13px 24px;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;text-decoration:none;transition:0.2s;">Start Unscrambling →</a>
+</div>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+<script src="shared.js"></script>
+</body>
+</html>
