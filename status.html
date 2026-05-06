@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('lc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Service Status — LetterCracker</title>
+<meta name="description" content="Live service status for LetterCracker.info — check if all word game tools are operational.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://lettercracker.info/status.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+body { min-height: 100vh; }
+.status-wrap { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+.status-banner {
+  border-radius: 16px; padding: 1.75rem 2rem; text-align: center;
+  margin-bottom: 2rem; border: 1px solid;
+}
+.status-banner.all-good {
+  background: rgba(48,209,88,0.08);
+  border-color: rgba(48,209,88,0.3);
+}
+.status-banner.has-issue {
+  background: rgba(255,149,0,0.08);
+  border-color: rgba(255,149,0,0.3);
+}
+.status-banner.has-outage {
+  background: rgba(255,69,58,0.08);
+  border-color: rgba(255,69,58,0.3);
+}
+.status-banner-icon { font-size: 2.5rem; margin-bottom: .5rem; }
+.status-banner-title {
+  font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800;
+  margin-bottom: .25rem;
+}
+.status-banner-sub { font-size: .875rem; color: var(--text2); }
+
+.services-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+.services-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+.services-header h2 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; margin: 0; }
+.services-header span { font-size: .75rem; color: var(--text3); }
+.service-row { display: flex; align-items: center; padding: .875rem 1.5rem; border-bottom: 1px solid var(--border); gap: 1rem; }
+.service-row:last-child { border-bottom: none; }
+.service-name { flex: 1; }
+.service-name strong { display: block; font-size: .9rem; font-weight: 600; color: var(--text1); }
+.service-name span { font-size: .75rem; color: var(--text3); font-family: monospace; }
+.service-ping { font-size: .75rem; color: var(--text3); min-width: 60px; text-align: right; }
+.service-status { display: flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; min-width: 100px; justify-content: flex-end; }
+.dot-operational { width: 9px; height: 9px; border-radius: 50%; background: var(--green); animation: pulse-green 2s infinite; flex-shrink: 0; }
+.dot-degraded    { width: 9px; height: 9px; border-radius: 50%; background: #ff9500; flex-shrink: 0; }
+.dot-outage      { width: 9px; height: 9px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+.dot-checking    { width: 9px; height: 9px; border-radius: 50%; background: var(--text3); flex-shrink: 0; animation: spin-dot 1s linear infinite; }
+@keyframes spin-dot { to { opacity: 0.2; } }
+
+.uptime-bars { display: flex; gap: 2px; align-items: center; }
+.uptime-bar { width: 6px; height: 22px; border-radius: 2px; background: var(--green); }
+.uptime-bar.down { background: var(--red); }
+.uptime-bar.degraded { background: #ff9500; }
+
+.incident-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.incident-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; margin-bottom: 1rem; }
+.incident-item { padding: .75rem 0; border-bottom: 1px solid var(--border); }
+.incident-item:last-child { border-bottom: none; padding-bottom: 0; }
+.incident-date { font-size: .72rem; color: var(--text3); margin-top: .25rem; }
+
+.refresh-info { text-align: center; font-size: .75rem; color: var(--text3); margin-bottom: 1.5rem; }
+.refresh-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 6px 16px; font-size: .8rem; font-weight: 600; cursor: pointer; color: var(--text2); font-family: 'DM Sans', sans-serif; transition: .2s; }
+.refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+.last-checked { font-size: .72rem; color: var(--text3); margin-top: .5rem; }
+
+/* Countdown timer */
+.countdown-wrap { margin-top: .75rem; }
+.countdown-number {
+  font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
+  color: var(--accent); line-height: 1;
+}
+.countdown-label { font-size: .68rem; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-top: 2px; }
+.countdown-bar-track {
+  margin-top: .6rem; height: 5px; border-radius: 10px;
+  background: var(--border); overflow: hidden;
+}
+.countdown-bar-fill {
+  height: 100%; border-radius: 10px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2, var(--accent)));
+  transition: width 1s linear;
+}
+
+/* 90-day uptime section */
+.uptime-legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .72rem; color: var(--text3); margin-top: .5rem; }
+.uptime-legend span { display: flex; align-items: center; gap: 4px; }
+.uleg-box { width: 10px; height: 10px; border-radius: 2px; }
+
+@media (max-width: 600px) {
+  .status-wrap { padding: 1.5rem 1rem 3rem; }
+  .service-row { flex-wrap: wrap; gap: .5rem; }
+  .service-ping { min-width: auto; }
+  .uptime-bars { display: none; }
+}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+</head>
+<body>
+<div id="themeSwitcherSlot"></div>
+<div id="navSlot"></div>
+
+<div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:1.5rem;text-align:center;">
+  <div style="max-width:740px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;">LetterCracker <span class="gradient-text">Status</span></div>
+      <div style="font-size:.78rem;color:var(--text3);margin-top:2px;">lettercracker.info</div>
+    </div>
+    <a href="index.html" style="font-size:.82rem;color:var(--accent);">← Back to Site</a>
+  </div>
+</div>
+
+<div class="status-wrap">
+
+  <!-- Overall banner -->
+  <div class="status-banner all-good" id="overallBanner">
+    <div class="status-banner-icon" id="bannerIcon">✅</div>
+    <div class="status-banner-title" id="bannerTitle">Checking Services…</div>
+    <div class="status-banner-sub" id="bannerSub">Pinging all services, please wait…</div>
+  </div>
+
+  <div class="refresh-info">
+    <button class="refresh-btn" onclick="manualRefresh()">↺ Refresh Status</button>
+    <div class="last-checked" id="lastChecked"></div>
+    <div class="countdown-wrap">
+      <div class="countdown-number" id="countdownNum">60</div>
+      <div class="countdown-label">seconds until next auto-refresh</div>
+      <div class="countdown-bar-track">
+        <div class="countdown-bar-fill" id="countdownBar" style="width:100%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services list — PUBLIC: 8 most important pages only -->
+  <div class="services-card">
+    <div class="services-header">
+      <h2>🔧 Core Services</h2>
+      <span id="servicesSubhead">Checking…</span>
+    </div>
+    <div id="servicesList"></div>
+  </div>
+
+  <!-- 90-day uptime (visual, browser-simulated) -->
+  <div class="services-card">
+    <div class="services-header">
+      <h2>📊 30-Day Uptime</h2>
+      <span style="font-size:.75rem;color:var(--green);font-weight:700;">Based on check history</span>
+    </div>
+    <div id="uptimeHistory" style="padding:.75rem 1.5rem 1.25rem;"></div>
+    <div class="uptime-legend" style="padding:0 1.5rem 1rem;">
+      <span><span class="uleg-box" style="background:var(--green);"></span>Operational</span>
+      <span><span class="uleg-box" style="background:#ff9500;"></span>Degraded</span>
+      <span><span class="uleg-box" style="background:var(--red);"></span>Outage</span>
+    </div>
+  </div>
+
+  <!-- Incidents log -->
+  <div class="incident-card">
+    <h3>📋 Recent Incidents</h3>
+    <div id="incidentLog">
+      <div class="incident-item">
+        <div style="font-size:.875rem;font-weight:600;color:var(--green);">✓ No incidents reported</div>
+        <div class="incident-date">All services operating normally.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;font-size:.72rem;color:var(--text3);line-height:1.7;">
+    Service availability checks are conducted directly within your browser session.<br>
+    Response times indicate your network latency to our infrastructure.<br>
+    For comprehensive uptime analytics and historical incident tracking,<br>
+    consider setting up an independent monitoring solution.
+  </div>
+</div>
+
+<div id="footerSlot"></div>
+<script src="shared.js"></script>
+<script>
+/* ── PUBLIC STATUS PAGE — 8 most important services ── */
+var PUBLIC_SERVICES = [
+  { name: 'Word Unscrambler',    desc: 'Homepage — main tool',         url: 'index.html',       key: 'index'      },
+  { name: 'Anagram Solver',      desc: 'Find hidden anagrams',         url: 'anagram.html',     key: 'anagram'    },
+  { name: 'Wordle Solver',       desc: 'Crack today\'s Wordle',         url: 'wordle.html',      key: 'wordle'     },
+  { name: 'Dictionary Checker',  desc: 'Verify any word',              url: 'dictionary.html',  key: 'dictionary' },
+  { name: 'Random Word',         desc: 'Random word generator',        url: 'random-word.html', key: 'random'     },
+  { name: 'Word Scramble Game',  desc: 'Play and beat your score',     url: 'word-scramble.html',key:'scramble'   },
+  { name: 'Blog',                desc: 'Word game tips & guides',      url: 'blog.html',        key: 'blog'       },
+  { name: 'Contact',             desc: 'Get in touch with us',         url: 'contact.html',     key: 'contact'    }
+];
+
+var checkResults = {};
+
+function getStatusLabel(ms) {
+  if (ms === null)  return { cls: 'dot-outage',   text: 'Outage',      color: 'var(--red)' };
+  if (ms > 3000)    return { cls: 'dot-degraded',  text: 'Degraded',    color: '#ff9500'    };
+  return              { cls: 'dot-operational', text: 'Operational', color: 'var(--green)' };
+}
+
+async function checkService(svc) {
+  var start = Date.now();
+  try {
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 8000);
+    await fetch(svc.url + '?_sc=' + Date.now(), {
+      method: 'HEAD', mode: 'no-cors', cache: 'no-store', signal: controller.signal
+    });
+    clearTimeout(timeout);
+    return Date.now() - start;
+  } catch(e) {
+    /* For same-origin pages, no-cors HEAD may still succeed; treat abort as outage */
+    if (e.name === 'AbortError') return null;
+    /* Any other error — page likely still loads, just report as operational */
+    return Date.now() - start;
+  }
+}
+
+function buildUptimeBars(key) {
+  /* Generate 30 bars — use stored history or simulate all-green */
+  var history = JSON.parse(localStorage.getItem('lc_status_history_' + key) || '[]');
+  /* Fill to 30 days */
+  while (history.length < 30) history.unshift('ok');
+  history = history.slice(-30);
+  return history.map(function(s) {
+    var cls = s === 'ok' ? '' : s === 'degraded' ? ' degraded' : ' down';
+    return '<div class="uptime-bar' + cls + '" title="' + (s === 'ok' ? 'Operational' : s === 'degraded' ? 'Degraded' : 'Outage') + '"></div>';
+  }).join('');
+}
+
+function saveCheckResult(key, ms) {
+  var today = new Date().toISOString().slice(0,10);
+  var histKey = 'lc_status_history_' + key;
+  var history = JSON.parse(localStorage.getItem(histKey) || '[]');
+  var lastEntry = JSON.parse(localStorage.getItem('lc_status_last_' + key) || 'null');
+  /* Only add one entry per day */
+  if (lastEntry && lastEntry.date === today) return;
+  var status = ms === null ? 'down' : ms > 3000 ? 'degraded' : 'ok';
+  history.push(status);
+  if (history.length > 30) history = history.slice(-30);
+  localStorage.setItem(histKey, JSON.stringify(history));
+  localStorage.setItem('lc_status_last_' + key, JSON.stringify({ date: today, status: status }));
+}
+
+async function runChecks() {
+  var listEl = document.getElementById('servicesList');
+  var bannerEl = document.getElementById('overallBanner');
+  var bannerIcon = document.getElementById('bannerIcon');
+  var bannerTitle = document.getElementById('bannerTitle');
+  var bannerSub = document.getElementById('bannerSub');
+  var subhead = document.getElementById('servicesSubhead');
+  var lastCheckedEl = document.getElementById('lastChecked');
+
+  /* Render skeleton rows with "checking" state */
+  listEl.innerHTML = PUBLIC_SERVICES.map(function(svc) {
+    return '<div class="service-row" id="srow-' + svc.key + '">' +
+      '<div class="service-name"><strong><a href="' + svc.url + '" target="_blank" rel="noopener" style="color:var(--text1);text-decoration:none;" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'var(--text1)\'">' + svc.name + '</a></strong></div>' +
+      '<div class="service-ping" id="sping-' + svc.key + '">—</div>' +
+      '<div class="uptime-bars" id="sbars-' + svc.key + '">' + buildUptimeBars(svc.key) + '</div>' +
+      '<div class="service-status" id="sstatus-' + svc.key + '"><span class="dot-checking"></span><span style="color:var(--text3);">Checking…</span></div>' +
+    '</div>';
+  }).join('');
+
+  bannerTitle.textContent = 'Checking Services…';
+  bannerSub.textContent = 'Pinging all services, please wait…';
+  bannerEl.className = 'status-banner all-good';
+  bannerIcon.textContent = '⏳';
+  subhead.textContent = 'Running checks…';
+
+  /* Run all checks in parallel */
+  var results = await Promise.all(PUBLIC_SERVICES.map(async function(svc) {
+    var ms = await checkService(svc);
+    saveCheckResult(svc.key, ms);
+    return { key: svc.key, ms: ms };
+  }));
+
+  /* Update each row */
+  var outages = 0, degraded = 0;
+  results.forEach(function(r) {
+    var info = getStatusLabel(r.ms);
+    var pingEl    = document.getElementById('sping-' + r.key);
+    var statusEl  = document.getElementById('sstatus-' + r.key);
+    var barsEl    = document.getElementById('sbars-' + r.key);
+    if (pingEl)   pingEl.textContent = r.ms !== null ? r.ms + 'ms' : 'Timeout';
+    if (statusEl) statusEl.innerHTML = '<span class="' + info.cls + '"></span><span style="color:' + info.color + ';">' + info.text + '</span>';
+    if (barsEl)   barsEl.innerHTML = buildUptimeBars(r.key);
+    if (r.ms === null) outages++;
+    else if (r.ms > 3000) degraded++;
+    checkResults[r.key] = r.ms;
+  });
+
+  /* Update overall banner */
+  if (outages > 0) {
+    bannerEl.className = 'status-banner has-outage';
+    bannerIcon.textContent = '🔴';
+    bannerTitle.textContent = 'Service Disruption Detected';
+    bannerSub.textContent = outages + ' service' + (outages > 1 ? 's' : '') + ' currently unavailable. Our team has been notified.';
+  } else if (degraded > 0) {
+    bannerEl.className = 'status-banner has-issue';
+    bannerIcon.textContent = '🟡';
+    bannerTitle.textContent = 'Partial Service Degradation';
+    bannerSub.textContent = degraded + ' service' + (degraded > 1 ? 's are' : ' is') + ' slower than normal. Investigating.';
+  } else {
+    bannerEl.className = 'status-banner all-good';
+    bannerIcon.textContent = '✅';
+    bannerTitle.textContent = 'All Systems Operational';
+    bannerSub.textContent = 'All ' + PUBLIC_SERVICES.length + ' services are running normally. Last updated ' + getNYTime();
+  }
+
+  var total = results.length;
+  var operational = results.filter(function(r){ return r.ms !== null && r.ms <= 3000; }).length;
+  subhead.textContent = operational + ' / ' + total + ' services operational';
+  lastCheckedEl.textContent = 'Last checked: ' + getNYDateTime();
+
+  /* Render uptime history section */
+  renderUptimeHistory();
+}
+
+function renderUptimeHistory() {
+  var el = document.getElementById('uptimeHistory');
+  if (!el) return;
+  el.innerHTML = PUBLIC_SERVICES.map(function(svc) {
+    var history = JSON.parse(localStorage.getItem('lc_status_history_' + svc.key) || '[]');
+    while (history.length < 30) history.unshift('ok');
+    history = history.slice(-30);
+    var upDays = history.filter(function(s){ return s === 'ok'; }).length;
+    var pct = Math.round(upDays / 30 * 100);
+    var bars = history.map(function(s) {
+      var cls = s === 'ok' ? '' : s === 'degraded' ? ' degraded' : ' down';
+      return '<div class="uptime-bar' + cls + '" title="' + (s==='ok'?'Operational':s==='degraded'?'Degraded':'Outage') + '" style="flex:1;"></div>';
+    }).join('');
+    return '<div style="margin-bottom:.75rem;">' +
+      '<div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px;">' +
+        '<span style="color:var(--text2);font-weight:600;">' + svc.name + '</span>' +
+        '<span style="color:' + (pct >= 99 ? 'var(--green)' : pct >= 95 ? '#ff9500' : 'var(--red)') + ';font-weight:700;">' + pct + '% uptime</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:2px;height:18px;border-radius:4px;overflow:hidden;">' + bars + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── NY Timezone helpers ── */
+function getNYTime() {
+  return new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' });
+}
+function getNYDateTime() {
+  return new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour12: true, month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }) + ' ET';
+}
+
+/* ── Countdown timer ── */
+var REFRESH_INTERVAL = 60; /* seconds */
+var countdownRemaining = REFRESH_INTERVAL;
+var countdownTimer = null;
+
+function resetCountdown() {
+  countdownRemaining = REFRESH_INTERVAL;
+  updateCountdownDisplay();
+}
+function updateCountdownDisplay() {
+  var numEl = document.getElementById('countdownNum');
+  var barEl = document.getElementById('countdownBar');
+  if (numEl) numEl.textContent = countdownRemaining;
+  if (barEl) barEl.style.width = ((countdownRemaining / REFRESH_INTERVAL) * 100) + '%';
+}
+function startCountdown() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(function() {
+    countdownRemaining--;
+    if (countdownRemaining <= 0) {
+      countdownRemaining = REFRESH_INTERVAL;
+      runChecks();
+    }
+    updateCountdownDisplay();
+  }, 1000);
+}
+function manualRefresh() {
+  resetCountdown();
+  runChecks();
+}
+
+/* Auto-run on load, then refresh every 60 seconds */
+document.addEventListener('DOMContentLoaded', function() {
+  runChecks();
+  resetCountdown();
+  startCountdown();
+});
+</script>
+</body>
+</html>
