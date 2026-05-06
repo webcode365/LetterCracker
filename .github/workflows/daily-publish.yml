@@ -1,0 +1,82 @@
+# LetterCracker — Hourly Content Publisher
+# =========================================
+# Runs every hour on the hour, 24 times per day.
+# Each run checks content-registry.json for articles due in the current
+# New York time hour and publishes them automatically.
+#
+# How to use:
+#   In admin panel SEO Page Creator, set your article's scheduled datetime
+#   to any time you want (e.g. 09:00 or 16:00 New York time).
+#   Export Registry JSON, push to GitHub — it publishes automatically.
+#
+# Examples:
+#   Wordle hint at 16:00 ET → live at exactly 4:00 PM ET
+#   Standard article at 09:00 ET → live at exactly 9:00 AM ET
+#   Article with no publishTime → live at midnight ET (00:00 run)
+#
+# GitHub Actions free tier: ~720 min/month used (well under 2,000 limit)
+# File must be at: .github/workflows/daily-publish.yml
+
+name: Hourly Content Publisher
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # Every hour on the hour, 24x per day
+  workflow_dispatch:        # Manual trigger from GitHub Actions tab
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run hourly page generator
+        run: node generate-pages.js
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git add -A
+          git diff --staged --quiet && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push published content
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --global user.email "autopublisher@lettercracker.info"
+          git config --global user.name "LetterCracker Auto Publisher"
+          NY_TIME=$(TZ='America/New_York' date +'%Y-%m-%d %H:%M ET')
+          ARTICLE_COUNT=$(node -e "
+            const fs=require('fs');
+            const reg=JSON.parse(fs.readFileSync('content-registry.json','utf8'));
+            const nyNow=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
+            const today=nyNow.toISOString().slice(0,10);
+            const nyHour=nyNow.getHours();
+            const nyMin=nyNow.getMinutes();
+            const live=reg.filter(a=>{
+              if(!a.releaseDate||a.releaseDate>today)return false;
+              if(a.releaseDate<today)return true;
+              if(!a.publishTime)return true;
+              const[h,m]=a.publishTime.split(':').map(Number);
+              return(h<nyHour)||(h===nyHour&&m<=nyMin);
+            });
+            console.log(live.length);
+          ")
+          git commit -m "Auto-publish ${NY_TIME}: ${ARTICLE_COUNT} articles live" || echo "Nothing to commit"
+          git push
+
+      - name: Nothing to publish this hour
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          NY_TIME=$(TZ='America/New_York' date +'%H:%M ET')
+          echo "Hourly check at ${NY_TIME} — no new content due this hour."
