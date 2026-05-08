@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<!-- PHASE 1: Theme flash prevention — inline script before CSS -->
+<script>
+(function(){var t=localStorage.getItem('lc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Free Dictionary Checker — Is It a Valid Scrabble Word? | LetterCracker</title>
+<meta name="description" content="Instantly check if any word is valid in Scrabble, Words with Friends, or standard English dictionaries. Free online dictionary checker — no signup required.">
+<meta name="keywords" content="dictionary check, is it a word, scrabble word checker, valid scrabble word, word validity checker, words with friends checker">
+<meta name="robots" content="index, follow">
+<!-- PHASE 1: Canonical corrected to lettercracker.info -->
+<link rel="canonical" href="https://lettercracker.info/dictionary.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Dictionary Checker — Is It a Valid Scrabble Word? | LetterCracker">
+<meta property="og:description" content="Instantly check if any word is valid in Scrabble, Words with Friends, or standard English dictionaries.">
+<meta property="og:url" content="https://lettercracker.info/dictionary.html">
+<meta property="og:image" content="https://lettercracker.info/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Dictionary Checker | LetterCracker">
+<meta name="twitter:description" content="Instantly check if any word is valid in Scrabble or Words with Friends.">
+<meta name="twitter:image" content="https://lettercracker.info/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* PHASE 2: Mobile responsiveness */
+@media (max-width:768px) {
+  .page-hero { padding:1rem !important; }
+  .container { padding:1rem !important; }
+  .dict-content-wrap { padding:1rem 1rem 3rem !important; }
+  .tool-card { padding:1rem !important; }
+  .letter-input { font-size:1rem !important; }
+  .popular-tags { gap:6px !important; }
+  .tag { font-size:0.78rem !important; padding:6px 10px !important; }
+}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Dictionary Lookup","description":"Free online dictionary. Look up definitions for any English word instantly.","url":"https://lettercracker.info/dictionary.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"LetterCracker","url":"https://lettercracker.info"}}
+</script>
+</head>
+<body>
+<div id="themeSwitcherSlot"></div>
+<div class="visitor-bar" id="visitorBar"><div class="visitor-bar-inner"><span class="live-dot"></span><span>Loading…</span></div></div>
+<div id="navSlot"></div>
+
+<section class="page-hero">
+  <h1>Dictionary <span class="gradient-text">Checker</span></h1>
+  <p>Instantly verify any word across Scrabble, Words with Friends, and standard English dictionaries.</p>
+</section>
+
+<div class="container ad-slot" style="padding:1rem 1.5rem 0;">
+  <div class="ad-placeholder" style="min-height:70px;max-width:728px;margin:0 auto;">Leaderboard Ad</div>
+</div>
+
+<div class="dict-content-wrap" style="max-width:640px;margin:0 auto;padding:1.5rem 1.5rem 5rem;">
+
+  <div class="tool-card">
+    <div class="letter-input-wrap">
+      <input type="text" id="dictInput" class="letter-input"
+        placeholder="Enter any word to check…"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        style="letter-spacing:0.04em;"
+        aria-label="Enter a word to check in the dictionary">
+      <button class="clear-btn" id="clearBtn" title="Clear">&#10005;</button>
+    </div>
+    <button class="unscramble-btn" onclick="checkWord()">
+      <span class="btn-text">Check Word</span>
+      <span class="btn-icon">&#8594;</span>
+    </button>
+    <div class="ad-slot" style="margin-top:10px;">
+      <div class="ad-placeholder ad-placeholder-sm">Responsive Ad</div>
+    </div>
+    <div id="dictResult" style="margin-top:1.5rem;display:none;">
+      <div id="dictStatus" style="text-align:center;padding:2rem;border-radius:14px;"></div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <p style="font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.75rem;">Try these words:</p>
+    <div class="popular-tags" style="display:flex;flex-wrap:wrap;gap:8px;">
+      <span class="tag" onclick="setAndCheck('QUIXOTIC')">QUIXOTIC</span>
+      <span class="tag" onclick="setAndCheck('ZOEAE')">ZOEAE</span>
+      <span class="tag" onclick="setAndCheck('OXAZINE')">OXAZINE</span>
+      <span class="tag" onclick="setAndCheck('SYZYGY')">SYZYGY</span>
+      <span class="tag" onclick="setAndCheck('TWERK')">TWERK</span>
+      <span class="tag" onclick="setAndCheck('SELFIE')">SELFIE</span>
+      <span class="tag" onclick="setAndCheck('EMOJI')">EMOJI</span>
+      <span class="tag" onclick="setAndCheck('QI')">QI</span>
+    </div>
+  </div>
+
+  <div class="ad-slot" style="margin:1.5rem 0;">
+    <div class="ad-placeholder" style="min-height:90px;">Mid-Content Ad</div>
+  </div>
+
+  <div style="padding-top:1rem;">
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;">Why Check a Word in the Dictionary?</h2>
+    <p style="color:var(--text2);line-height:1.8;margin-bottom:1rem;">Whether you're in the middle of a heated Scrabble game or wondering if a new slang word has made it into the official lexicon, our Dictionary Checker gives you an instant, authoritative answer. We compare words against over <strong>170,000 entries</strong> drawn from official Scrabble word lists (NWL, CSW) and the ENABLE word list used by Words with Friends.</p>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin:1.5rem 0 0.75rem;">Which Dictionary Does LetterCracker Use?</h2>
+    <p style="color:var(--text2);line-height:1.8;margin-bottom:1rem;">Our database combines multiple official word lists: the <strong>NWL (North American Scrabble)</strong>, <strong>CSW/SOWPODS (International Scrabble)</strong>, and <strong>ENABLE (Words with Friends)</strong>. If a word is found in any of these lists, it will show as valid in our checker.</p>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin:1.5rem 0 0.75rem;">Related Word Tools</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="index.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#128256; Unscrambler</a>
+      <a href="anagram.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#128260; Anagram Solver</a>
+      <a href="wordle.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#129001; Wordle Solver</a>
+      <a href="random-word.html" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:0.875rem;color:var(--text2);text-decoration:none;">&#127922; Random Word</a>
+    </div>
+  </div>
+</div>
+
+<section class="amazon-section">
+  <div class="container">
+    <div class="amazon-header">
+      <h3>Expand Your Vocabulary &#128216;</h3>
+      <p style="color:var(--text3);font-size:0.82rem;margin-top:4px;">Dictionaries and vocabulary builders loved by word enthusiasts</p>
+    </div>
+    <div class="amazon-grid">
+      <a href="https://amzn.to/merriam-dict" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128214;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Merriam-Webster Collegiate Dictionary</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$27.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/word-power" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128161;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Word Power Made Easy</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$12.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/oxford-thesaurus" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128269;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Oxford American Writer's Thesaurus</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <div class="amazon-price">$22.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/scrabble-dictionary" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128218;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Official Scrabble Players Dictionary</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <div class="amazon-price">$19.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+    </div>
+    <p class="amazon-disclaimer">* As an Amazon Associate, LetterCracker earns from qualifying purchases.</p>
+  </div>
+</section>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+<script src="words-db.js"></script>
+<script src="shared.js"></script>
+<script>
+function checkWord() {
+  var raw = document.getElementById('dictInput').value.trim();
+  if (!raw) { showToast('Please enter a word'); return; }
+  var word = raw.toLowerCase();
+  var pts = WORD_DB.getPoints(word);
+  var resultEl = document.getElementById('dictResult');
+  var statusEl = document.getElementById('dictStatus');
+  /* Load only the shard for this word's length */
+  WORD_DB.loadByLengths([word.length]).then(function(wordList) {
+    var found = wordList.indexOf(word) !== -1;
+    resultEl.style.display = 'block';
+    if (found) {
+      statusEl.innerHTML =
+        '<div style="font-size:3rem;margin-bottom:0.75rem;">&#9989;</div>' +
+        '<div style="font-family:\'Syne\',sans-serif;font-size:2.2rem;font-weight:800;margin-bottom:0.5rem;">' + raw.toUpperCase() + '</div>' +
+        '<div style="color:var(--green);font-weight:700;font-size:1rem;margin-bottom:1rem;">Valid word &#8212; in our dictionary!</div>' +
+        '<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">' +
+          '<span style="background:var(--surface2);padding:6px 16px;border-radius:20px;font-size:0.82rem;color:var(--text2);">Scrabble points: <strong style="color:var(--accent)">' + pts + '</strong></span>' +
+          '<span style="background:var(--surface2);padding:6px 16px;border-radius:20px;font-size:0.82rem;color:var(--text2);">Length: <strong style="color:var(--accent)">' + word.length + '</strong> letters</span>' +
+        '</div>';
+    statusEl.style.background = 'rgba(34,197,94,0.08)';
+    statusEl.style.border = '1px solid rgba(34,197,94,0.25)';
+  } else {
+    statusEl.innerHTML =
+      '<div style="font-size:3rem;margin-bottom:0.75rem;">&#10060;</div>' +
+      '<div style="font-family:\'Syne\',sans-serif;font-size:2.2rem;font-weight:800;margin-bottom:0.5rem;">' + raw.toUpperCase() + '</div>' +
+      '<div style="color:var(--red);font-weight:700;font-size:1rem;margin-bottom:0.75rem;">Not found in our dictionary.</div>' +
+      '<div style="color:var(--text2);font-size:0.82rem;line-height:1.6;">This word may be valid in other dictionaries not covered by our current database, or it may be a proper noun or abbreviation. Always defer to official game rulings.</div>';
+    statusEl.style.background = 'rgba(255,71,87,0.08)';
+    statusEl.style.border = '1px solid rgba(255,71,87,0.25)';
+  }
+  resultEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }); /* end loadByLengths */
+}
+
+function setAndCheck(word) {
+  document.getElementById('dictInput').value = word;
+  var clr = document.getElementById('clearBtn');
+  if (clr) clr.style.opacity = '1';
+  checkWord();
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
+}
+
+var inp = document.getElementById('dictInput');
+var clr = document.getElementById('clearBtn');
+inp && inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') checkWord(); });
+inp && inp.addEventListener('input', function(){ if (clr) clr.style.opacity = inp.value ? '1' : '0'; });
+clr && clr.addEventListener('click', function(){
+  inp.value = '';
+  if (clr) clr.style.opacity = '0';
+  document.getElementById('dictResult').style.display = 'none';
+});
+var urlWord = new URLSearchParams(window.location.search).get('word');
+if (urlWord) { inp.value = urlWord; if (clr) clr.style.opacity = '1'; checkWord(); }
+</script>
+</body>
+</html>

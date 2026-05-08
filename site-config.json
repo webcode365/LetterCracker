@@ -1,0 +1,29 @@
+{
+  "_instructions": "Fill in your real values below. This file is read by generate-pages.js every time it runs.",
+  "siteUrl": "https://lettercracker.info",
+  "siteName": "LetterCracker",
+  "siteTagline": "Free Word Unscrambler & Word Game Tools",
+  "ogImage": "https://lettercracker.info/og-image.png",
+  "adsenseId": "ca-pub-XXXXXXXXXXXXXXXX",
+  "amazonTag": "yourstore-20",
+  "enableAds": true,
+  "enableAmazon": true,
+  "adSlots": {
+    "topBanner": true,
+    "inContentTop": true,
+    "inContentMiddle": true,
+    "inContentBottom": true,
+    "endOfArticle": true,
+    "amazonSection": true
+  },
+  "defaultIndexInSearch": true,
+  "defaultShowAds": true,
+  "outputDir": ".",
+  "pingEngines": {
+    "google": true,
+    "bing": true,
+    "yandex": true
+  },
+  "indexNowKey": "",
+  "articlePrefix": "article-"
+}

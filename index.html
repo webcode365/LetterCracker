@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<!-- PHASE 1: Theme flash prevention — inline script before CSS, prevents white flash -->
+<script>
+(function(){var t=localStorage.getItem('lc_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LetterCracker — Free Word Unscrambler &amp; Solver | Instant Results</title>
+<meta name="description" content="LetterCracker is the fastest free word unscrambler online. Instantly unscramble letters for Scrabble, Words with Friends, Wordle &amp; more. 170,000+ words. No signup needed.">
+<meta name="keywords" content="word unscrambler, unscramble words, scrabble solver, words with friends cheat, anagram solver, wordle solver, letter unscrambler, word finder, scrabble word finder, unscramble letters">
+<meta name="robots" content="index, follow">
+<meta name="author" content="LetterCracker">
+<!-- PHASE 1: Canonical corrected to lettercracker.info -->
+<link rel="canonical" href="https://lettercracker.info/">
+<!-- Open Graph — all URLs corrected to lettercracker.info -->
+<meta property="og:title" content="LetterCracker — Free Word Unscrambler">
+<meta property="og:description" content="Instantly unscramble letters and find every possible word. Free, fast, no signup.">
+<meta property="og:url" content="https://lettercracker.info/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://lettercracker.info/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LetterCracker — Free Word Unscrambler">
+<meta name="twitter:description" content="Instantly unscramble letters and find every possible word. Free, fast, no signup.">
+<meta name="twitter:image" content="https://lettercracker.info/og-image.png">
+<!-- Schema.org structured data — URL corrected -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "LetterCracker Word Unscrambler",
+  "url": "https://lettercracker.info",
+  "description": "Free online word unscrambler and word finder for Scrabble, Words with Friends, Wordle, and more.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<!-- Google Analytics placeholder — replace G-XXXXXXXXXX -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
+<!-- Google AdSense placeholder — replace ca-pub-XXXXXXXX -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX" crossorigin="anonymous"></script> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+</head>
+<body>
+
+<div id="themeSwitcherSlot"></div>
+
+<div class="visitor-bar" id="visitorBar">
+  <div class="visitor-bar-inner">
+    <span class="live-dot"></span>
+    <span>Detecting your location…</span>
+  </div>
+</div>
+
+<div id="navSlot"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-anim">
+    <div class="floating-letter" style="--delay:0s;--x:8%;--y:20%">L</div>
+    <div class="floating-letter" style="--delay:0.5s;--x:82%;--y:12%">E</div>
+    <div class="floating-letter" style="--delay:1s;--x:62%;--y:72%">T</div>
+    <div class="floating-letter" style="--delay:1.5s;--x:18%;--y:78%">T</div>
+    <div class="floating-letter" style="--delay:2s;--x:91%;--y:52%">E</div>
+    <div class="floating-letter" style="--delay:2.5s;--x:42%;--y:28%">R</div>
+    <div class="floating-letter" style="--delay:3s;--x:72%;--y:88%">S</div>
+    <div class="floating-letter" style="--delay:3.5s;--x:4%;--y:58%">W</div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-ad-top ad-slot" id="heroAdTop">
+      <div class="ad-placeholder" style="max-width:728px;margin:0 auto;min-height:70px;">Leaderboard Ad — 728×90</div>
+    </div>
+
+    <div class="hero-badge">&#10022; Free &amp; Instant — No Signup Required</div>
+
+    <h1 class="hero-title">Unscramble Any<br><span class="gradient-text">Word Instantly</span></h1>
+    <p class="hero-sub">The smartest word unscrambler for Scrabble, Words with Friends, Wordle &amp; more. Enter your letters — we find every possible word in milliseconds.</p>
+
+    <!-- MAIN TOOL CARD -->
+    <div class="tool-card" id="mainTool">
+      <div class="letter-input-wrap">
+        <input type="text" id="letterInput" class="letter-input"
+          placeholder="Enter letters (e.g. AELRST)"
+          maxlength="45" autocomplete="off" autocorrect="off" spellcheck="false"
+          aria-label="Enter your scrambled letters">
+        <button class="clear-btn" id="clearBtn" title="Clear" aria-label="Clear input">&#10005;</button>
+      </div>
+      <div class="tool-hint">Use <strong>?</strong> or <strong>*</strong> for blank/wildcard tiles &nbsp;|&nbsp; Up to 45 letters</div>
+
+      <button class="unscramble-btn" id="unscrambleBtn" aria-label="Unscramble words">
+        <span class="btn-text">Unscramble</span>
+        <span class="btn-icon">&#8594;</span>
+      </button>
+
+      <div class="ad-slot ad-slot-main" id="adMain">
+        <div class="ad-placeholder" style="min-height:70px;">Responsive Ad — 728×90 / 320×50</div>
+      </div>
+
+      <div class="options-toggle" id="optionsToggle" role="button" aria-expanded="false" tabindex="0">
+        &#9881; Advanced Options <span class="toggle-arrow">&#9660;</span>
+      </div>
+
+      <div class="options-panel" id="optionsPanel">
+        <div class="options-grid">
+          <div class="option-group">
+            <label>Dictionary</label>
+            <select id="dictSelect">
+              <option value="nwl">NWL (US/Canada – Scrabble)</option>
+              <option value="csw">CSW (UK / International)</option>
+              <option value="enable">ENABLE (Standard English)</option>
+            </select>
+          </div>
+          <div class="option-group">
+            <label>Starts With</label>
+            <input type="text" id="startsWith" placeholder="e.g. pr" maxlength="10" autocorrect="off">
+          </div>
+          <div class="option-group">
+            <label>Ends With</label>
+            <input type="text" id="endsWith" placeholder="e.g. ing" maxlength="10" autocorrect="off">
+          </div>
+          <div class="option-group">
+            <label>Must Include</label>
+            <input type="text" id="mustInclude" placeholder="e.g. ea" maxlength="10" autocorrect="off">
+          </div>
+          <div class="option-group">
+            <label>Word Length</label>
+            <select id="lengthFilter">
+              <option value="all">Any length</option>
+              <option value="2">2 letters</option>
+              <option value="3">3 letters</option>
+              <option value="4">4 letters</option>
+              <option value="5">5 letters</option>
+              <option value="6">6 letters</option>
+              <option value="7">7 letters</option>
+              <option value="8+">8+ letters</option>
+            </select>
+          </div>
+          <div class="option-group">
+            <label>Sort By</label>
+            <select id="sortBy">
+              <option value="length">Word Length</option>
+              <option value="alpha">Alphabetical</option>
+              <option value="points">Scrabble Points</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading-state" id="loadingState" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <span>Searching words…</span>
+      </div>
+
+      <div class="results-section" id="resultsSection" aria-live="polite">
+        <div class="results-header">
+          <div class="results-meta" id="resultsMeta"></div>
+          <div class="results-actions">
+            <button class="action-btn" id="copyAllBtn" aria-label="Copy all results">&#128203; Copy All</button>
+            <button class="action-btn" id="exportBtn" aria-label="Export results">&#11015; Export</button>
+          </div>
+        </div>
+        <div class="ad-slot ad-slot-results" id="adResults">
+          <div class="ad-placeholder ad-placeholder-sm">Responsive Ad</div>
+        </div>
+        <div id="resultsByLength"></div>
+      </div>
+
+    </div><!-- /tool-card -->
+  </div>
+</section>
+
+<!-- WORD OF THE DAY -->
+<section class="wotd-section">
+  <div class="container">
+    <div class="wotd-card">
+      <div class="wotd-label">&#10022; Word of the Day</div>
+      <div class="wotd-word" id="wotdWord">EPHEMERAL</div>
+      <div class="wotd-phonetic" id="wotdPhonetic">/&#618;&#712;fem.&#601;r.&#601;l/</div>
+      <div class="wotd-pos" id="wotdPos">adjective</div>
+      <div class="wotd-def" id="wotdDef">Lasting for a very short time; transitory — here today, gone tomorrow.</div>
+      <div class="wotd-example" id="wotdExample" style="color:var(--text3);font-size:0.85rem;font-style:italic;line-height:1.6;margin-bottom:1rem;border-left:3px solid var(--accent);padding-left:0.75rem;"></div>
+      <div class="wotd-points">Scrabble value: <strong id="wotdPoints">15</strong> pts</div>
+    </div>
+  </div>
+</section>
+
+<!-- Mid-page ad -->
+<div class="container ad-slot" id="adMidPage" style="padding:1rem 1.5rem;">
+  <div class="ad-placeholder" style="min-height:90px;">Mid-Page Leaderboard Ad</div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Everything You Need to <span class="gradient-text">Win</span></h2>
+      <p>A complete suite of free word game tools — no account, no limits.</p>
+    </div>
+    <div class="features-grid">
+      <a href="index.html" class="feature-card active-card">
+        <div class="feature-icon">&#128256;</div>
+        <h3>Word Unscrambler</h3>
+        <p>Enter scrambled letters and instantly find all valid words sorted by length and Scrabble point value.</p>
+        <span class="feature-tag">Most Popular</span>
+      </a>
+      <a href="anagram.html" class="feature-card">
+        <div class="feature-icon">&#128260;</div>
+        <h3>Anagram Solver</h3>
+        <p>Discover every hidden anagram within your letters. Perfect for crosswords and creative word puzzles.</p>
+      </a>
+      <a href="wordle.html" class="feature-card">
+        <div class="feature-icon">&#129001;</div>
+        <h3>Wordle Solver</h3>
+        <p>Stuck on today's Wordle? Enter your green, yellow and grey clues — crack any puzzle instantly.</p>
+        <span class="feature-tag">Trending</span>
+      </a>
+      <a href="dictionary.html" class="feature-card">
+        <div class="feature-icon">&#128214;</div>
+        <h3>Dictionary Checker</h3>
+        <p>Instantly verify whether any word is valid in Scrabble, Words with Friends, or standard dictionaries.</p>
+      </a>
+      <a href="random-word.html" class="feature-card">
+        <div class="feature-icon">&#127922;</div>
+        <h3>Random Word Generator</h3>
+        <p>Generate random words by length, starting letter, or theme — for games, writing, and education.</p>
+      </a>
+      <a href="word-scramble.html" class="feature-card">
+        <div class="feature-icon">&#127918;</div>
+        <h3>Word Scramble Game</h3>
+        <p>Race the clock, unscramble words against the timer, and beat your high score!</p>
+        <span class="feature-tag">New</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WORLD MAP (admin-togglable, hidden by default) -->
+<section class="map-section" id="worldMapSection" style="display:none">
+  <div class="container">
+    <div class="section-header">
+      <h2>Live Visitor <span class="gradient-text">World Map</span></h2>
+      <p>Real-time visitors from around the globe</p>
+    </div>
+    <div class="map-container">
+      <div class="map-wrap">
+        <svg id="worldMap" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" class="world-svg">
+          <rect width="1000" height="500" fill="#0a0e1a"/>
+          <path d="M120,60 L220,50 L260,80 L270,130 L240,170 L200,200 L180,240 L150,260 L130,240 L100,200 L90,150 L100,100 Z" fill="#1a2744" stroke="#2d4a8a" stroke-width="1"/>
+          <path d="M195,255 L240,245 L265,280 L270,330 L255,380 L230,410 L205,400 L185,360 L180,310 L185,270 Z" fill="#1a2744" stroke="#2d4a8a" stroke-width="1"/>
+          <path d="M430,120 L510,110 L540,140 L550,200 L545,270 L520,320 L490,340 L460,320 L440,270 L425,200 L420,150 Z" fill="#1a2744" stroke="#2d4a8a" stroke-width="1"/>
+          <path d="M510,45 L700,35 L780,70 L800,120 L780,170 L720,190 L660,180 L600,200 L560,180 L520,150 L505,100 Z" fill="#1a2744" stroke="#2d4a8a" stroke-width="1"/>
+          <path d="M730,270 L810,260 L840,290 L845,340 L820,370 L780,375 L750,355 L725,320 L720,290 Z" fill="#1a2744" stroke="#2d4a8a" stroke-width="1"/>
+          <line x1="0" y1="250" x2="1000" y2="250" stroke="#1e2d4d" stroke-width="0.5" stroke-dasharray="4,4"/>
+          <g id="visitorDots"></g>
+        </svg>
+        <div class="map-legend"><span class="legend-dot"></span> Live Visitors</div>
+      </div>
+      <div class="map-stats">
+        <div class="map-stat-card"><div class="map-stat-num" id="mapTotal">0</div><div class="map-stat-label">Online Now</div></div>
+        <div class="map-stat-card"><div class="map-stat-num" id="mapCountries">0</div><div class="map-stat-label">Countries</div></div>
+        <div id="recentVisitors" class="recent-visitors"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORD SCRAMBLE GAME -->
+<section class="scramble-section">
+  <div class="container">
+    <div class="ad-slot" id="adAboveScramble" style="text-align:center;margin-bottom:1.5rem;">
+      <div class="ad-placeholder" style="max-width:728px;margin:0 auto;min-height:70px;">Ad — Above Play Word Scramble</div>
+    </div>
+    <div class="section-header">
+      <h2>Play Word <span class="gradient-text">Scramble</span></h2>
+      <p>Race the clock — unscramble words and beat your high score!</p>
+    </div>
+    <div class="ad-slot" id="adGameTop" style="text-align:center;margin-bottom:1.5rem;">
+      <div class="ad-placeholder" style="max-width:728px;margin:0 auto;min-height:70px;">Game Section Ad</div>
+    </div>
+    <div class="game-wrap">
+      <div class="game-card" id="gameCard">
+        <!-- Start Screen -->
+        <div id="gameStart">
+          <div style="font-size:3rem;margin-bottom:1rem;">&#127918;</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;">Word Scramble Challenge</h3>
+          <p style="color:var(--text2);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.7;">Unscramble as many words as you can in 60 seconds. One point per correct word, bonus for longer words!</p>
+          <button class="game-submit" onclick="startGame()" style="width:100%;padding:16px;font-size:1.1rem;">Start Game &#8594;</button>
+        </div>
+        <!-- Game Play Screen -->
+        <div id="gamePlay" style="display:none">
+          <div class="game-hud">
+            <div class="hud-item"><div class="hud-label">Score</div><div class="hud-value" id="gameScore">0</div></div>
+            <div class="hud-item"><div class="hud-label">Time</div><div class="hud-value" id="gameTimer">60</div></div>
+            <div class="hud-item"><div class="hud-label">Best</div><div class="hud-value" id="gameBest">0</div></div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="timerBar" style="width:100%"></div></div>
+          <div class="scrambled-word" id="gameScrambled">—</div>
+          <div class="game-feedback" id="gameFeedback"></div>
+          <div class="game-input-row">
+            <input type="text" class="game-input" id="gameInput" placeholder="Your answer…" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="game-submit" onclick="checkGameAnswer()">&#10003;</button>
+          </div>
+          <div class="game-btns">
+            <button class="game-btn" onclick="skipWord()">Skip &#10230;</button>
+            <button class="game-btn" onclick="showHint()">Hint &#128161;</button>
+            <button class="game-btn danger" onclick="resetGame()">Restart &#8634;</button>
+          </div>
+          <div class="game-answer" id="gameAnswer">
+            <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.1em">Correct Answer</div>
+            <div class="answer-word" id="answerWord">—</div>
+          </div>
+        </div>
+        <!-- Game Over Screen -->
+        <div id="gameOver" style="display:none">
+          <div style="font-size:3rem;margin-bottom:0.75rem;">&#127942;</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.4rem;">Game Over!</h3>
+          <p style="color:var(--text2);margin-bottom:1rem;font-size:0.9rem;">Your score: <strong id="finalScore" style="color:var(--accent);font-size:1.2rem;">0</strong></p>
+          <p style="color:var(--text3);font-size:0.82rem;margin-bottom:1.5rem;">Best score: <strong id="bestScoreDisplay" style="color:var(--green);">0</strong></p>
+          <div class="game-btns" style="justify-content:center;">
+            <button class="game-submit" onclick="startGame()" style="padding:14px 28px;">Play Again &#8594;</button>
+            <button class="game-btn" onclick="resetGame()">Reset &#8634;</button>
+          </div>
+        </div>
+      </div>
+      <div class="ad-slot" id="adGameBottom" style="margin-top:1.5rem;text-align:center;">
+        <div class="ad-placeholder" style="min-height:90px;">Game Section Bottom Ad</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>How <span class="gradient-text">LetterCracker</span> Works</h2>
+      <p>Three simple steps to find every possible word from your letters.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Enter Your Letters</h3>
+        <p>Type up to 45 letters. Use ? or * for blank tiles.</p>
+      </div>
+      <div class="step-arrow">&#8594;</div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>Set Filters</h3>
+        <p>Choose your dictionary and add prefix, suffix, or length filters.</p>
+      </div>
+      <div class="step-arrow">&#8594;</div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>Get Every Word</h3>
+        <p>Our engine scans our full word database and returns every valid match instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AMAZON AFFILIATE -->
+<section class="amazon-section">
+  <div class="container">
+    <div class="amazon-header">
+      <h3>Level Up Your Word Game &#127919;</h3>
+      <p style="color:var(--text3);font-size:0.82rem;margin-top:4px;">Gear up with top-rated word game accessories</p>
+    </div>
+    <div class="amazon-grid">
+      <a href="https://amzn.to/scrabble-classic" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#127922;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Scrabble Classic Board Game</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$24.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/scrabble-dictionary" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128218;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Official Scrabble Players Dictionary</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <div class="amazon-price">$19.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/bananagrams" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#128308;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Bananagrams Word Tile Game</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="amazon-price">$14.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+      <a href="https://amzn.to/wwf-board" class="amazon-card" target="_blank" rel="nofollow noopener">
+        <div class="amazon-img">&#127942;</div>
+        <div class="amazon-info">
+          <div class="amazon-title">Words With Friends Board Game</div>
+          <div class="amazon-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <div class="amazon-price">$29.99</div>
+          <div class="amazon-btn">Shop on Amazon &#8594;</div>
+        </div>
+      </a>
+    </div>
+    <p class="amazon-disclaimer">* As an Amazon Associate, LetterCracker earns from qualifying purchases.</p>
+  </div>
+</section>
+
+<!-- SEO CONTENT -->
+<section class="content-section">
+  <div class="container">
+    <div class="content-grid">
+      <div class="content-main">
+        <h2>What Is a Word Unscrambler?</h2>
+        <p>A <strong>word unscrambler</strong> is an online tool that rearranges a set of jumbled letters to reveal every valid word hidden within them. LetterCracker supports inputs of up to <strong>45 letters</strong> — covering even the longest words in the English language. Our high-speed engine checks an extensive dictionary of valid words, returning results sorted by length and Scrabble point value so you always find the highest-scoring play.</p>
+        <h2>Which Word Games Does LetterCracker Support?</h2>
+        <p>LetterCracker is purpose-built for every major word game, including:</p>
+        <ul>
+          <li><strong>Scrabble (US &amp; Canada)</strong> — Uses the NWL / OSPD dictionary for tournament-legal words.</li>
+          <li><strong>Scrabble (UK &amp; International)</strong> — Supports the full CSW / SOWPODS word list.</li>
+          <li><strong>Words With Friends</strong> — Optimized with the ENABLE word list for accurate results.</li>
+          <li><strong>Wordle</strong> — Use our dedicated <a href="wordle.html" style="color:var(--accent);">Wordle Solver</a> to crack any daily puzzle.</li>
+          <li><strong>Wordscapes &amp; Word Cookies</strong> — Filter by exact word length to match grid constraints.</li>
+          <li><strong>Crossword Puzzles</strong> — Use prefix and suffix filters to nail down specific positions.</li>
+        </ul>
+        <h2>How to Get the Best Results</h2>
+        <ul>
+          <li>Enter all your rack letters — the more letters, the more valid words we find.</li>
+          <li>Use <strong>?</strong> or <strong>*</strong> for each blank tile on your rack.</li>
+          <li>Open <em>Advanced Options</em> and apply <em>Starts With</em> or <em>Ends With</em> filters for specific board positions.</li>
+          <li>Sort by <em>Scrabble Points</em> to instantly find your highest-value play of the game.</li>
+          <li>Click any word chip to copy it directly to your clipboard.</li>
+        </ul>
+        <h2>Why Players Trust LetterCracker</h2>
+        <!-- PHASE 1: domain corrected in body text -->
+        <p>Unlike other word unscramblers that slow down or charge premium fees, LetterCracker (<strong>lettercracker.info</strong>) is <strong>100% free</strong>, runs entirely in your browser, and returns results in under a second. We update our dictionaries regularly to stay current with the latest official word lists — so every word you find is tournament-legal and game-ready.</p>
+        <h2>Long-Tail Word Unscrambler Searches We Help With</h2>
+        <ul>
+          <li>Unscramble 7-letter words for Scrabble bingo plays</li>
+          <li>Find words with double letters like QQ, ZZ, or XX</li>
+          <li>Words using all 5 vowels — AEIOU combinations</li>
+          <li>High-scoring Scrabble words with Q but no U</li>
+          <li>Two-letter Scrabble words for tight board positions</li>
+          <li>Wordle answers with specific green and yellow letters</li>
+        </ul>
+      </div>
+
+      <div class="content-sidebar">
+        <div class="ad-slot" id="adSidebar">
+          <div class="ad-placeholder side-ad">300×250 Display Ad</div>
+        </div>
+        <div class="quick-links-card">
+          <h3>&#128279; Quick Tools</h3>
+          <ul>
+            <li><a href="anagram.html">&#8594; Anagram Solver</a></li>
+            <li><a href="wordle.html">&#8594; Wordle Solver</a></li>
+            <li><a href="dictionary.html">&#8594; Dictionary Checker</a></li>
+            <li><a href="random-word.html">&#8594; Random Word Generator</a></li>
+            <li><a href="word-scramble.html">&#8594; Word Scramble Game</a></li>
+          </ul>
+        </div>
+        <div class="quick-links-card">
+          <h3>&#128293; Popular Searches</h3>
+          <div class="popular-tags">
+            <span class="tag" onclick="setInput('AELRST')">AELRST</span>
+            <span class="tag" onclick="setInput('ETAOIN')">ETAOIN</span>
+            <span class="tag" onclick="setInput('SCRABBLE')">SCRABBLE</span>
+            <span class="tag" onclick="setInput('PUZZLE')">PUZZLE</span>
+            <span class="tag" onclick="setInput('LETTERS')">LETTERS</span>
+            <span class="tag" onclick="setInput('WORDS')">WORDS</span>
+            <span class="tag" onclick="setInput('QUARTZ')">QUARTZ</span>
+            <span class="tag" onclick="setInput('XENON')">XENON</span>
+          </div>
+        </div>
+        <div class="ad-slot" id="adSidebar2">
+          <div class="ad-placeholder" style="min-height:250px;">Second Sidebar Ad 300×250</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bottom ad -->
+<div class="container ad-slot" id="adBottom" style="padding:0 1.5rem 2rem;">
+  <div class="ad-placeholder" style="min-height:90px;">Bottom Leaderboard Ad 728×90</div>
+</div>
+
+<!-- AUTO-PUBLISHED ARTICLES — dynamic grid from content-registry.json -->
+<section id="articlesSection" style="display:none;">
+  <div class="container" style="padding:3rem 1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.75rem;">
+      <div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin:0;">Latest Word Game Guides</h2>
+        <p style="color:var(--text3);font-size:.85rem;margin:.35rem 0 0;">New strategy guides, word lists and tips — updated daily</p>
+      </div>
+      <div id="articleCountBadge" style="font-size:.75rem;padding:5px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;color:var(--text3);"></div>
+    </div>
+
+    <!-- Category filter pills -->
+    <div id="articleFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;"></div>
+
+    <!-- Article cards grid -->
+    <div id="articleGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;"></div>
+
+    <!-- Load more button -->
+    <div style="text-align:center;margin-top:2rem;">
+      <button id="articlesLoadMore" style="display:none;padding:10px 28px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.875rem;cursor:pointer;" onclick="articlesLoadMore()">Load More Articles</button>
+    </div>
+  </div>
+</section>
+
+<div id="footerSlot"></div>
+<div class="toast" id="toast"></div>
+
+<script src="words-db.js"></script>
+<script src="shared.js"></script>
+<script src="main.js"></script>
+<!-- Dynamic Article Grid — loads from content-registry.json -->
+<script>
+(function() {
+  var ARTICLES_PER_PAGE = 9;
+  var allArticles       = [];
+  var visibleCount      = ARTICLES_PER_PAGE;
+  var activeCategory    = 'all';
+
+  /* Category display names */
+  var CAT_LABELS = {
+    wordle:   'Wordle',
+    scrabble: 'Scrabble',
+    anagram:  'Anagram',
+    spelling: 'Spelling',
+    tips:     'Tips & Strategy',
+    wordlists:'Word Lists',
+  };
+
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function escHTML(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderGrid() {
+    var filtered = activeCategory === 'all'
+      ? allArticles
+      : allArticles.filter(function(a){ return a.category === activeCategory; });
+
+    var toShow  = filtered.slice(0, visibleCount);
+    var gridEl  = document.getElementById('articleGrid');
+    var moreBtn = document.getElementById('articlesLoadMore');
+    var badgeEl = document.getElementById('articleCountBadge');
+
+    if (badgeEl) badgeEl.textContent = filtered.length + ' article' + (filtered.length !== 1 ? 's' : '');
+
+    if (!gridEl) return;
+    gridEl.innerHTML = toShow.map(function(a) {
+      var url      = 'article-' + escHTML(a.slug) + '.html';
+      var catLabel = CAT_LABELS[a.category] || escHTML(a.category || 'Word Games');
+      var dateDisp = a.releaseDate || '';
+      var tags     = Array.isArray(a.tags) ? a.tags.slice(0,3) : [];
+      return '<a href="' + url + '" style="text-decoration:none;color:inherit;">' +
+        '<div class="admin-card" style="height:100%;display:flex;flex-direction:column;gap:.6rem;cursor:pointer;transition:.18s;border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.25rem 1rem;" ' +
+        'onmouseover="this.style.borderColor=\'var(--accent)\';this.style.transform=\'translateY(-2px)\'" ' +
+        'onmouseout="this.style.borderColor=\'var(--border)\';this.style.transform=\'none\'">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">' +
+            '<span style="font-size:.68rem;padding:2px 9px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text3);">' + catLabel + '</span>' +
+            '<span style="font-size:.68rem;color:var(--text3);">' + escHTML(dateDisp) + '</span>' +
+          '</div>' +
+          '<h3 style="font-family:\'Syne\',sans-serif;font-size:.95rem;font-weight:800;line-height:1.4;color:var(--text1);margin:0;">' + escHTML(a.title) + '</h3>' +
+          '<p style="font-size:.78rem;color:var(--text3);line-height:1.6;margin:0;flex:1;">' + escHTML((a.metaDescription||'').slice(0,110)) + (a.metaDescription&&a.metaDescription.length>110?'…':'') + '</p>' +
+          '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:auto;">' +
+            tags.map(function(t){ return '<span style="font-size:.65rem;padding:1px 7px;background:var(--bg2);border-radius:10px;color:var(--text3);">' + escHTML(t) + '</span>'; }).join('') +
+          '</div>' +
+          '<div style="font-size:.78rem;color:var(--accent);font-weight:600;margin-top:.25rem;">Read guide &#8594;</div>' +
+        '</div>' +
+      '</a>';
+    }).join('');
+
+    if (moreBtn) moreBtn.style.display = (visibleCount < filtered.length) ? 'inline-block' : 'none';
+  }
+
+  function renderFilters(articles) {
+    var cats = {};
+    articles.forEach(function(a){ if(a.category) cats[a.category] = (cats[a.category]||0)+1; });
+    var filtersEl = document.getElementById('articleFilters');
+    if (!filtersEl) return;
+
+    var pills = [{ key:'all', label:'All', count: articles.length }];
+    Object.keys(cats).sort().forEach(function(k){
+      pills.push({ key:k, label: CAT_LABELS[k]||k, count: cats[k] });
+    });
+
+    filtersEl.innerHTML = pills.map(function(p){
+      var active = activeCategory === p.key;
+      return '<button onclick="window._lcSetCategory(\'' + p.key + '\')" style="padding:5px 14px;border-radius:20px;border:1.5px solid ' + (active?'var(--accent)':'var(--border)') + ';background:' + (active?'var(--accent)':'var(--surface)') + ';color:' + (active?'#fff':'var(--text2)') + ';font-family:\'DM Sans\',sans-serif;font-size:.78rem;cursor:pointer;">' +
+        p.label + ' <span style="opacity:.7;">(' + p.count + ')</span>' +
+      '</button>';
+    }).join('');
+  }
+
+  window._lcSetCategory = function(cat) {
+    activeCategory = cat;
+    visibleCount   = ARTICLES_PER_PAGE;
+    renderFilters(allArticles);
+    renderGrid();
+  };
+
+  window.articlesLoadMore = function() {
+    visibleCount += ARTICLES_PER_PAGE;
+    renderGrid();
+  };
+
+  /* Fetch and process registry */
+  function loadArticles() {
+    fetch('content-registry.json?_v=' + Date.now())
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        var today = todayStr();
+        /* Only show released articles (releaseDate <= today) */
+        allArticles = data
+          .filter(function(a){ return a.releaseDate && a.releaseDate <= today; })
+          .sort(function(a,b){ return b.releaseDate.localeCompare(a.releaseDate); }); /* newest first */
+
+        if (allArticles.length === 0) return; /* No articles yet — section stays hidden */
+
+        var section = document.getElementById('articlesSection');
+        if (section) section.style.display = 'block';
+
+        renderFilters(allArticles);
+        renderGrid();
+      })
+      .catch(function(){ /* Registry not present or fetch failed — section stays hidden silently */ });
+  }
+
+
+  /* Load after page is interactive */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadArticles);
+  } else {
+    loadArticles();
+  }
+})();
+</script>
+</body>
+</html>

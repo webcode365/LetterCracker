@@ -1,0 +1,20 @@
+LetterCracker — Build Report
+Generated: 2026-05-07T08:55:25.974Z
+
+Articles released : 3
+Articles future   : 0
+Articles skipped  : 0
+Category pages    : 2
+Sitemap URLs      : 12
+Duplicate slugs   : 0
+
+No warnings.
+
+── Category Pages ──
+  category-wordle.html  (1 articles)
+  category-scrabble.html  (2 articles)
+
+── Released Articles ──
+  [index] best-5-letter-words-wordle (2026-05-03)
+  [index] scrabble-words-with-q-no-u (2026-05-04)
+  [index] 7-letter-words-scrabble-bingo (2026-05-05)
