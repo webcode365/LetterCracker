@@ -1,0 +1,24 @@
+LetterCracker — Broken Link Report
+Generated: 2026-05-09T09:58:21.508Z
+Total checked: 16
+Broken / errors: 0
+
+✅ All links are healthy! No issues found.
+
+── Full Results ──
+✓ [200] https://lettercracker.info/
+✓ [200] https://lettercracker.info/index.html
+✓ [200] https://lettercracker.info/anagram.html
+✓ [200] https://lettercracker.info/wordle.html
+✓ [200] https://lettercracker.info/word-scramble.html
+✓ [200] https://lettercracker.info/dictionary.html
+✓ [200] https://lettercracker.info/random-word.html
+✓ [200] https://lettercracker.info/blog.html
+✓ [200] https://lettercracker.info/about.html
+✓ [200] https://lettercracker.info/contact.html
+✓ [200] https://lettercracker.info/status.html
+✓ [200] https://lettercracker.info/sitemap.html
+✓ [200] https://lettercracker.info/privacy.html
+✓ [200] https://lettercracker.info/terms.html
+✓ [200] https://lettercracker.info/disclaimer.html
+✓ [200] https://lettercracker.info/cookies.html
