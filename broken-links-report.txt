@@ -1,5 +1,5 @@
 LetterCracker — Broken Link Report
-Generated: 2026-05-12T12:29:05.397Z
+Generated: 2026-05-13T13:38:22.453Z
 Total checked: 16
 Broken / errors: 0
 
